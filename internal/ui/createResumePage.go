@@ -320,33 +320,37 @@ func (app *App) createSaveButton() *widget.Button {
 			BizTripsReady:   Client.BizTripsReadyCheck.Checked,
 			Occupation:      Client.OccupationEntry.Text,
 			Schedule:        Client.ScheduleEntry.Text,
-			Education: []models.Education{
-				{
-					Facility:       Client.FacilityEntry.Text,
-					GraduationYear: Client.GraduationYearEntry.Text,
-					Faculty:        Client.FacultyEntry.Text,
-				},
+			Education: []models.Education{models.Education{
+				Facility:       Client.FacilityEntry.Text,
+				GraduationYear: Client.GraduationYearEntry.Text,
+				Faculty:        Client.FacultyEntry.Text,
 			},
-			Experience: []models.ResumeExperience{
-				{
-					Position:         Client.PositionEntry.Text,
-					Company:          Client.CompanyEntry.Text,
-					StartDate:        Client.StartDateEntry.Text,
-					EndDate:          Client.EndDateEntry.Text,
-					Responsibilities: Client.ResponsibilitiesEntry.Text,
-				},
+			},
+			Experience: []models.ResumeExperience{models.ResumeExperience{
+				Position:         Client.PositionEntry.Text,
+				Company:          Client.CompanyEntry.Text,
+				StartDate:        Client.StartDateEntry.Text,
+				EndDate:          Client.EndDateEntry.Text,
+				Responsibilities: Client.ResponsibilitiesEntry.Text,
+			},
 			},
 			Skills:          Client.SkillsEntry.Text,
 			SelfDescription: Client.SelfDescriptionEntry.Text,
 		}
-
-		if err := db.Create(&resume).Error; err != nil {
+		if err := app.DB.Create(&resume).Error; err != nil {
 			dialog.ShowError(err, app.Window)
 			return
 		}
 
 		dialog.ShowInformation("Резюме сохранено", "Ваше резюме успешно сохранено!", app.Window)
-		app.ChangePage(ChooseTemplate(app.Window))
+
+		templatesPage, err := app.ChooseTemplate()
+		if err != nil {
+			dialog.ShowError(err, app.Window)
+			return
+		}
+
+		app.ChangePage(templatesPage)
 	})
 
 	return saveButton

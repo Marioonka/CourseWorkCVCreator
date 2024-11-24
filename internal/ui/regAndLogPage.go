@@ -8,10 +8,7 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
-	"gorm.io/gorm"
 )
-
-var db *gorm.DB
 
 func (app *App) StartWindow() *fyne.Container {
 	welcomeText := canvas.NewText("Привет! Выбери, что ты хочешь сделать", nil)

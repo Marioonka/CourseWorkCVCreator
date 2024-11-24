@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"coursework/helpers"
 	"fmt"
 	"image/color"
 	"os"
@@ -11,21 +12,31 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func ChooseTemplate(window fyne.Window) fyne.CanvasObject {
+func (app *App) ChooseTemplate() (fyne.CanvasObject, error) {
 	namePageText := canvas.NewText("Выбор шаблона", nil)
 	namePageText.TextSize = 14
 
 	line := canvas.NewLine(color.Gray{Y: 1})
 	line.StrokeWidth = 2
 
-	GenerateResume(window, *Client, encoded,
-		"coursework/internal/resume/templates/professional_resume.html",
-		"coursework/internal/ui/generatedResume.html")
+	templatePath, err := helpers.GetPathToFile("professional_resume.html")
+	if err != nil {
+		return nil, err
+	}
 
-	generatedHTML, err := os.ReadFile("coursework/internal/ui/generatedResume.html")
+	generatedResume, err := helpers.GetPathToFile("generatedResume.html")
+	if err != nil {
+		return nil, err
+	}
+
+	GenerateResume(app.Window, *Client, encoded,
+		templatePath,
+		generatedResume)
+
+	generatedHTML, err := os.ReadFile(generatedResume)
 	if err != nil {
 		fmt.Println("Ошибка чтения сгенерированного файла:", err)
-		return nil
+		return nil, err
 	}
 
 	generatedText := widget.NewLabel(string(generatedHTML))
@@ -35,5 +46,5 @@ func ChooseTemplate(window fyne.Window) fyne.CanvasObject {
 		line,
 		generatedText,
 	)
-	return content
+	return content, nil
 }
