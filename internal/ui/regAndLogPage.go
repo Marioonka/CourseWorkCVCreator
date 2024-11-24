@@ -84,6 +84,14 @@ func (app *App) Registration() fyne.CanvasObject {
 			})
 			return
 		}
+		if err := app.DB.Where("login = ?", login).First(&newUser).Error; err != nil {
+			fyne.CurrentApp().SendNotification(&fyne.Notification{
+				Title:   "Ошибка входа",
+				Content: "Не удалось найти зарегистрированный аккаунт",
+			})
+			return
+		}
+		app.UserID = newUser.ID
 
 		app.ChangePage(app.MainPage())
 	})
@@ -156,7 +164,7 @@ func (app *App) Authorization() fyne.CanvasObject {
 			})
 			return
 		}
-
+		app.UserID = user.ID
 		app.ChangePage(app.MainPage())
 	})
 
