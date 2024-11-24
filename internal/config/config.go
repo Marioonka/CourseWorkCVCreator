@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
+	"os"
 	"path/filepath"
 	"runtime"
 )
@@ -20,23 +21,46 @@ type Config struct {
 }
 
 func LoadConfig() (*Config, error) {
-	// Получаем путь к текущему файлу исходного кода
-	_, filename, _, _ := runtime.Caller(0)
-	// Поднимаемся на уровень папки проекта
-	projectRoot := filepath.Join(filepath.Join(filepath.Dir(filename), ".."), "..")
+	// Список потенциальных путей к конфигурационному файлу
+	possiblePaths := []string{}
 
-	configPath := filepath.Join(projectRoot, "cmd", "config1.yaml")
-
-	var cfg Config
-	err := cleanenv.ReadConfig(configPath, &cfg)
-	if err != nil {
-		return nil, fmt.Errorf("error reading config: %w", err)
+	// 1. Путь из переменной окружения
+	if envPath := os.Getenv("CONFIG_PATH"); envPath != "" {
+		possiblePaths = append(possiblePaths, envPath)
 	}
 
-	// Затем переменные окружения переопределят значения из файла
-	err = cleanenv.ReadEnv(&cfg)
-	if err != nil {
-		return nil, err
+	// 2. Текущая рабочая директория
+	if cwd, err := os.Getwd(); err == nil {
+		possiblePaths = append(possiblePaths, filepath.Join(cwd, "config1.yaml"))
+	}
+
+	// 3. Директория исполняемого файла
+	if execPath, err := os.Executable(); err == nil {
+		execDir := filepath.Dir(execPath)
+		possiblePaths = append(possiblePaths, filepath.Join(execDir, "config1.yaml"))
+	}
+
+	// 4. Поиск относительно исходного кода (для dev-среды)
+	_, filename, _, _ := runtime.Caller(0)
+	projectRoot := filepath.Join(filepath.Dir(filename), "..", "..")
+	possiblePaths = append(possiblePaths, filepath.Join(projectRoot, "cmd", "config1.yaml"))
+
+	// Итеративный поиск конфигурационного файла
+	var cfg Config
+	for _, path := range possiblePaths {
+		if _, err := os.Stat(path); err == nil {
+			// Файл найден
+			err := cleanenv.ReadConfig(path, &cfg)
+			if err != nil {
+				return nil, fmt.Errorf("error reading config from %s: %w", path, err)
+			}
+			break
+		}
+	}
+
+	// Проверяем, был ли загружен конфиг
+	if (Config{}) == cfg {
+		return nil, fmt.Errorf("config file not found in paths: %v", possiblePaths)
 	}
 
 	return &cfg, nil
