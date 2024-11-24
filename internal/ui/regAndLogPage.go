@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"coursework/helpers"
 	"coursework/internal/models"
 
 	"fyne.io/fyne/v2"
@@ -14,18 +13,16 @@ import (
 
 var db *gorm.DB
 
-func StartWindow(myWindow fyne.Window, database *gorm.DB) *fyne.Container {
-	db = database
-
+func (app *App) StartWindow() *fyne.Container {
 	welcomeText := canvas.NewText("Привет! Выбери, что ты хочешь сделать", nil)
 	welcomeText.TextSize = 24
 
 	regButton := widget.NewButton("Зарегистрироваться", func() {
-		myWindow.SetContent(Registration(myWindow))
+		app.ChangePage(app.Registration())
 	})
 
 	authButton := widget.NewButton("Войти", func() {
-		myWindow.SetContent(Authorization(myWindow))
+		app.ChangePage(app.Authorization())
 	})
 
 	buttonsContainer := container.New(
@@ -44,12 +41,10 @@ func StartWindow(myWindow fyne.Window, database *gorm.DB) *fyne.Container {
 		layout.NewSpacer(),
 	)
 
-	helpers.SaveCurrPage(mainContent)
 	return mainContent
 }
 
-func Registration(myWindow fyne.Window) fyne.CanvasObject {
-
+func (app *App) Registration() fyne.CanvasObject {
 	registrationText := canvas.NewText("Регистрируйтесь и создавайте резюме мечты прямо сейчас!", nil)
 	registrationText.TextSize = 24
 
@@ -82,7 +77,7 @@ func Registration(myWindow fyne.Window) fyne.CanvasObject {
 			Password: password,
 		}
 
-		if err := db.Create(&newUser).Error; err != nil {
+		if err := app.DB.Create(&newUser).Error; err != nil {
 			fyne.CurrentApp().SendNotification(&fyne.Notification{
 				Title:   "Ошибка регистрации",
 				Content: "Логин уже существует или произошла ошибка.",
@@ -90,10 +85,10 @@ func Registration(myWindow fyne.Window) fyne.CanvasObject {
 			return
 		}
 
-		myWindow.SetContent(MainPage(db, newUser.ID, myWindow))
+		app.ChangePage(app.MainPage())
 	})
 
-	back := helpers.BackButton(myWindow)
+	back := app.BackButton()
 
 	regContainer := container.New(
 		layout.NewGridWrapLayout(fyne.NewSize(300, 40)),
@@ -120,7 +115,7 @@ func Registration(myWindow fyne.Window) fyne.CanvasObject {
 	return content
 }
 
-func Authorization(myWindow fyne.Window) fyne.CanvasObject {
+func (app *App) Authorization() fyne.CanvasObject {
 	authorizationText := canvas.NewText("Войди в аккаунт", nil)
 	authorizationText.TextSize = 24
 
@@ -146,7 +141,7 @@ func Authorization(myWindow fyne.Window) fyne.CanvasObject {
 
 		var user models.RegisterUsers
 
-		if err := db.Where("login = ?", login).First(&user).Error; err != nil {
+		if err := app.DB.Where("login = ?", login).First(&user).Error; err != nil {
 			fyne.CurrentApp().SendNotification(&fyne.Notification{
 				Title:   "Ошибка входа",
 				Content: "Неверный логин или пароль.",
@@ -162,10 +157,10 @@ func Authorization(myWindow fyne.Window) fyne.CanvasObject {
 			return
 		}
 
-		myWindow.SetContent(MainPage(db, user.ID, myWindow))
+		app.ChangePage(app.MainPage())
 	})
 
-	back := helpers.BackButton(myWindow)
+	back := app.BackButton()
 
 	loginContainer := container.New(
 		layout.NewGridWrapLayout(fyne.NewSize(300, 40)),

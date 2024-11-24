@@ -4,9 +4,8 @@ import (
 	"coursework/database"
 	"coursework/internal/models"
 	"coursework/internal/ui"
-	"log"
-
 	"fyne.io/fyne/v2/app"
+	"log"
 )
 
 func main() {
@@ -26,8 +25,8 @@ func main() {
 	sqlDB, _ := db.DB()
 	defer sqlDB.Close()
 
-	myapp := app.New()
-	window := ui.CreateWindow(myapp)
-	window.SetContent(ui.StartWindow(window, db))
-	window.ShowAndRun()
+	window := ui.CreateWindow(app.New())
+	app := &ui.App{Window: window, DB: db}
+	app.ChangePage(app.StartWindow())
+	app.Window.ShowAndRun()
 }

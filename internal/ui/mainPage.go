@@ -9,17 +9,16 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
-	"gorm.io/gorm"
 )
 
-func MainPage(db *gorm.DB, userID uint, window fyne.Window) fyne.CanvasObject {
+func (app *App) MainPage() fyne.CanvasObject {
 	namePageText := canvas.NewText("Главная страница", nil)
 	namePageText.TextSize = 14
 
 	line := canvas.NewLine(color.Gray{Y: 1})
 	line.StrokeWidth = 2
 
-	resume := helpers.CheckUserResumeExists(db, userID)
+	resume := helpers.CheckUserResumeExists(app.DB, app.UserID)
 
 	var mainPageText canvas.Text
 	var mainPageButton *widget.Button
@@ -37,7 +36,7 @@ func MainPage(db *gorm.DB, userID uint, window fyne.Window) fyne.CanvasObject {
 	mainPageText.TextSize = 20
 
 	createButton := widget.NewButton("Создать новое резюме", func() {
-		window.SetContent(CreateResume(window, db, userID))
+		app.ChangePage(app.CreateResume())
 	})
 	mainPageButton = createButton
 

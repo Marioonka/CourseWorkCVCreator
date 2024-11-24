@@ -12,13 +12,12 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
-	"gorm.io/gorm"
 )
 
 var Client *ClientsDatas
 var encoded string
 
-func CreateResume(window fyne.Window, db *gorm.DB, currentSessionID uint) fyne.CanvasObject {
+func (app *App) CreateResume() fyne.CanvasObject {
 
 	namePageText := canvas.NewText("Создание резюме", nil)
 	namePageText.TextSize = 14
@@ -31,7 +30,7 @@ func CreateResume(window fyne.Window, db *gorm.DB, currentSessionID uint) fyne.C
 
 	inputAllDatas()
 
-	personalDataContainer := createPersonalData(window)
+	personalDataContainer := createPersonalData(app.Window)
 	contactsContainer := createContactData()
 	workConditionContainer := createWorkConditions()
 	experienceContainer := createWorkExperience()
@@ -80,33 +79,10 @@ func CreateResume(window fyne.Window, db *gorm.DB, currentSessionID uint) fyne.C
 
 		// О себе
 		aboutContainer,
-		container.NewGridWithColumns(3, widget.NewLabel(""), createSaveButton(window, currentSessionID)),
+		container.NewGridWithColumns(3, widget.NewLabel(""), app.createSaveButton()),
 	)
 
 	return container.NewScroll(formContent)
-}
-
-type ClientsDatas struct {
-	FullNameEntry         *widget.Entry
-	AgeEntry              *widget.Entry
-	LocationEntry         *widget.Entry
-	RelocationReadyCheck  *widget.Check
-	BizTripsReadyCheck    *widget.Check
-	OccupationEntry       *widget.Entry
-	ScheduleEntry         *widget.Entry
-	PhoneNumberEntry      *widget.Entry
-	MailEntry             *widget.Entry
-	TelegramEntry         *widget.Entry
-	FacilityEntry         *widget.Entry
-	GraduationYearEntry   *widget.Entry
-	FacultyEntry          *widget.Entry
-	PositionEntry         *widget.Entry
-	CompanyEntry          *widget.Entry
-	StartDateEntry        *widget.Entry
-	EndDateEntry          *widget.Entry
-	ResponsibilitiesEntry *widget.Entry
-	SkillsEntry           *widget.Entry
-	SelfDescriptionEntry  *widget.Entry
 }
 
 func inputAllDatas() {
@@ -329,13 +305,13 @@ func createAboutData() *fyne.Container {
 	)
 }
 
-func createSaveButton(window fyne.Window, currentSessionID uint) *widget.Button {
+func (app *App) createSaveButton() *widget.Button {
 	saveButton := widget.NewButton("Сохранить резюме", func() {
 
-		fmt.Println("ID пользователя текущей сессии - ", currentSessionID)
+		fmt.Println("ID пользователя текущей сессии - ", app.UserID)
 
 		resume := models.Resume{
-			UserID:          currentSessionID,
+			UserID:          app.UserID,
 			FullName:        Client.FullNameEntry.Text,
 			Age:             Client.AgeEntry.Text,
 			Photo:           encoded,
@@ -365,12 +341,12 @@ func createSaveButton(window fyne.Window, currentSessionID uint) *widget.Button 
 		}
 
 		if err := db.Create(&resume).Error; err != nil {
-			dialog.ShowError(err, window)
+			dialog.ShowError(err, app.Window)
 			return
 		}
 
-		dialog.ShowInformation("Резюме сохранено", "Ваше резюме успешно сохранено!", window)
-		window.SetContent(ChooseTemplate(window))
+		dialog.ShowInformation("Резюме сохранено", "Ваше резюме успешно сохранено!", app.Window)
+		app.ChangePage(ChooseTemplate(app.Window))
 	})
 
 	return saveButton
