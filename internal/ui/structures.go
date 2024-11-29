@@ -15,6 +15,7 @@ type App struct {
 }
 
 type ClientsDatas struct {
+	TargetPositionEntry   *widget.Entry
 	FullNameEntry         *widget.Entry
 	AgeEntry              *widget.Entry
 	LocationEntry         *widget.Entry

@@ -18,7 +18,7 @@ var Client *ClientsDatas
 var encoded string
 
 func (app *App) CreateResume() fyne.CanvasObject {
-
+	log.Println("Страница создания резюме начала открываться")
 	namePageText := canvas.NewText("Создание резюме", nil)
 	namePageText.TextSize = 14
 
@@ -29,7 +29,9 @@ func (app *App) CreateResume() fyne.CanvasObject {
 	fillTheFormsText.TextSize = 24
 
 	inputAllDatas()
+	log.Println("Все данные были введены")
 
+	positionContainer := createTargetPositionData()
 	personalDataContainer := createPersonalData(app.Window)
 	contactsContainer := createContactData()
 	workConditionContainer := createWorkConditions()
@@ -37,6 +39,8 @@ func (app *App) CreateResume() fyne.CanvasObject {
 	educationContainer := createEduExperience()
 	skillsContainer := createSkillsData()
 	aboutContainer := createAboutData()
+
+	log.Println("Все контейнеры были заполнены")
 
 	divider := func() *canvas.Line {
 		line := canvas.NewLine(color.Gray{Y: 1})
@@ -47,6 +51,8 @@ func (app *App) CreateResume() fyne.CanvasObject {
 	formContent := container.NewVBox(
 
 		fillTheFormsText,
+		widget.NewLabel(""),
+		positionContainer,
 		widget.NewLabel(""),
 		personalDataContainer,
 		divider(),
@@ -81,12 +87,15 @@ func (app *App) CreateResume() fyne.CanvasObject {
 		aboutContainer,
 		container.NewGridWithColumns(3, widget.NewLabel(""), app.createSaveButton()),
 	)
+	log.Println("Весь контент был сформирован")
 
 	return container.NewScroll(formContent)
 }
 
 func inputAllDatas() {
 	Client = &ClientsDatas{
+
+		TargetPositionEntry: widget.NewEntry(),
 
 		FullNameEntry: widget.NewEntry(),
 		AgeEntry:      widget.NewEntry(),
@@ -133,6 +142,14 @@ func addExperienceForm(cont *fyne.Container) {
 	)
 
 	cont.Add(experienceForm)
+}
+
+func createTargetPositionData() *fyne.Container {
+	PosTitle := canvas.NewText("Желаемая должность", color.White)
+	PosTitle.TextSize = 16
+	return container.NewVBox(
+		PosTitle, Client.TargetPositionEntry,
+	)
 }
 
 func addEducationForm(cont *fyne.Container) {
@@ -287,10 +304,8 @@ func createSkillsData() *fyne.Container {
 
 	skillsTitle := canvas.NewText("Навыки", color.White)
 	skillsTitle.TextSize = 16
-	skillsLabel := widget.NewLabel("Навыки:")
 	return container.NewVBox(
-		skillsTitle,
-		skillsLabel, Client.SkillsEntry,
+		skillsTitle, Client.SkillsEntry,
 	)
 }
 
@@ -298,10 +313,8 @@ func createAboutData() *fyne.Container {
 
 	aboutTitle := canvas.NewText("О себе", color.White)
 	aboutTitle.TextSize = 16
-	selfDescriptionLabel := widget.NewLabel("О себе:")
 	return container.NewVBox(
-		aboutTitle,
-		selfDescriptionLabel, Client.SelfDescriptionEntry,
+		aboutTitle, Client.SelfDescriptionEntry,
 	)
 }
 
@@ -344,11 +357,7 @@ func (app *App) createSaveButton() *widget.Button {
 
 		dialog.ShowInformation("Резюме сохранено", "Ваше резюме успешно сохранено!", app.Window)
 
-		templatesPage, err := app.ChooseTemplate()
-		if err != nil {
-			dialog.ShowError(err, app.Window)
-			return
-		}
+		templatesPage := app.getMainPage()
 
 		app.ChangePage(templatesPage)
 	})

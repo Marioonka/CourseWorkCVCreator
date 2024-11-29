@@ -2,6 +2,7 @@ package ui
 
 import (
 	"coursework/internal/models"
+	"log"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -89,8 +90,8 @@ func (app *App) Registration() fyne.CanvasObject {
 			return
 		}
 		app.UserID = newUser.ID
-
-		app.ChangePage(app.MainPage())
+		log.Println("Сейчас произойдет смена страницы")
+		app.ChangePage(app.getMainPage())
 	})
 
 	back := app.BackButton()
@@ -162,7 +163,7 @@ func (app *App) Authorization() fyne.CanvasObject {
 			return
 		}
 		app.UserID = user.ID
-		app.ChangePage(app.MainPage())
+		app.ChangePage(app.getMainPage())
 	})
 
 	back := app.BackButton()

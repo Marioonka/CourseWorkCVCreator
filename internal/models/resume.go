@@ -47,6 +47,6 @@ type Contact struct {
 	ID          uint   `gorm:"primaryKey"`
 	ResumeID    uint   `gorm:"not null"`
 	PhoneNumber string `gorm:"size:255"`
-	MailAdress  string `gorm:"size:255"`
+	MailAddress string `gorm:"size:255"`
 	Telegram    string `gorm:"size:255"`
 }
