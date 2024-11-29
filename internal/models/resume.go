@@ -11,7 +11,7 @@ type Resume struct {
 	FullName        string             `gorm:"size:255"`
 	Age             string             `gorm:"not null"`
 	Photo           string             `gorm:"type:text"`
-	Contacts        Contact            `gorm:"foreignKey:ResumeID"`
+	Contacts        Contact            `gorm:"foreignKey:ResumeID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Occupation      string             `gorm:"type:text"`
 	Schedule        string             `gorm:"type:text"`
 	Location        string             `gorm:"type:text"`

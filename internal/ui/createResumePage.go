@@ -325,6 +325,7 @@ func (app *App) createSaveButton() *widget.Button {
 
 		resume := models.Resume{
 			UserID:          app.UserID,
+			Position:        Client.PositionEntry.Text,
 			FullName:        Client.FullNameEntry.Text,
 			Age:             Client.AgeEntry.Text,
 			Photo:           encoded,
@@ -333,6 +334,11 @@ func (app *App) createSaveButton() *widget.Button {
 			BizTripsReady:   Client.BizTripsReadyCheck.Checked,
 			Occupation:      Client.OccupationEntry.Text,
 			Schedule:        Client.ScheduleEntry.Text,
+			Contacts: models.Contact{
+				PhoneNumber: Client.PhoneNumberEntry.Text,
+				MailAddress: Client.MailEntry.Text,
+				Telegram:    Client.MailEntry.Text,
+			},
 			Education: []models.Education{models.Education{
 				Facility:       Client.FacilityEntry.Text,
 				GraduationYear: Client.GraduationYearEntry.Text,

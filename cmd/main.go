@@ -16,7 +16,7 @@ func main() {
 		return
 	}
 
-	err = db.AutoMigrate(&models.RegisterUsers{}, &models.Resume{}, &models.Education{}, &models.ResumeExperience{})
+	err = db.AutoMigrate(&models.RegisterUsers{}, &models.Resume{}, &models.Education{}, &models.ResumeExperience{}, &models.Contact{})
 	if err != nil {
 		log.Fatalf("Ошибка миграции: %v", err)
 	}
