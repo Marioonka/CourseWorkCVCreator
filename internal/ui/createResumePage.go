@@ -325,7 +325,7 @@ func (app *App) createSaveButton() *widget.Button {
 
 		resume := models.Resume{
 			UserID:          app.UserID,
-			Position:        Client.PositionEntry.Text,
+			Position:        Client.TargetPositionEntry.Text,
 			FullName:        Client.FullNameEntry.Text,
 			Age:             Client.AgeEntry.Text,
 			Photo:           encoded,
