@@ -84,12 +84,10 @@ func (app *App) CreateResume() fyne.CanvasObject {
 		aboutContainer,
 		container.NewGridWithColumns(3, widget.NewLabel(""), app.createSaveButton()),
 	)
-	setPathsToStruct()
-	Paths.GenerateResume(app.Window, ClientsDatas{})
 	return container.NewScroll(formContent)
 }
 
-func setPathsToStruct() {
+func SetPathsToStruct() {
 	template, _ := helpers.GetPathToFile("professional_resume.html")
 	outGenerated, _ := helpers.GetPathToFile("generatedResume.html")
 	htmlToPdf, _ := helpers.GetPathToFile("generatedPDF.pdf")
@@ -372,7 +370,6 @@ func (app *App) createSaveButton() *widget.Button {
 		dialog.ShowInformation("Резюме сохранено", "Ваше резюме успешно сохранено!", app.Window)
 
 		templatesPage := app.getMainPage()
-
 		app.ChangePage(templatesPage)
 	})
 

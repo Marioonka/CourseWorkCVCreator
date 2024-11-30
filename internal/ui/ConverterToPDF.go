@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func (paths *PathsToResumes) GetHtmlToPDF(htmlFilePath, outputPath string) error {
+func (paths *PathsToResumes) GetHtmlToPDF() error {
 	info, err := os.Stat(paths.GeneratedResumePath)
 	if err != nil {
 		log.Fatal(err)

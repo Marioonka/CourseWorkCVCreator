@@ -4,6 +4,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/widget"
 	"log"
+	"os/exec"
 )
 
 func (app *App) ChangePage(newPage fyne.CanvasObject) {
@@ -18,4 +19,12 @@ func (app *App) BackButton() *widget.Button {
 		app.ChangePage(app.PrevPage)
 	})
 	return backBut
+}
+
+func openPDF(filePath string) {
+	cmd := exec.Command("xdg-open", filePath)
+	err := cmd.Start()
+	if err != nil {
+		log.Println("Ошибка открытия PDF:", err)
+	}
 }

@@ -4,50 +4,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Резюме</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h1, h2 {
+            color: #4CAF50;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 36px;
+        }
+
+        section {
+            margin: 20px;
+            padding: 15px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        section h2 {
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        strong {
+            color: #4CAF50;
+        }
+
+        .content-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .personal-info p,
+        .education-info p,
+        .experience-info p,
+        .skills-info p,
+        .about-info p,
+        .additional-info p {
+            margin-bottom: 10px;
+        }
+
+        .info-header {
+            margin-bottom: 10px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .contact-info p,
+        .contact-info strong {
+            color: #4CAF50;
+        }
+
+        .contact-info {
+            margin-bottom: 20px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #777;
+        }
+
+    </style>
 </head>
 <body>
-<h1>Резюме: {{FullName}}</h1>
+<div class="content-container">
+    <h1>Резюме: {{TargetPosition}}</h1>
 
-<section>
-    <h2>Личные данные</h2>
-    <p><strong>Возраст:</strong> {{Age}}</p>
-    <p><strong>Местоположение:</strong> {{Location}}</p>
-    <p><strong>Готовность к переезду:</strong> {{RelocationReady}}</p>
-    <p><strong>Готовность к командировкам:</strong> {{BizTripsReady}}</p>
-    <p><strong>Телефон:</strong> {{PhoneNumber}}</p>
-    <p><strong>Email:</strong> {{Email}}</p>
-    <p><strong>Телеграм:</strong> {{Telegram}}</p>
-</section>
+    <section class="personal-info">
+        <h2>Личные данные</h2>
+        <p><strong>ФИО:</strong> {{FullName}}</p>
+        <p><strong>Возраст:</strong> {{Age}}</p>
+        <p><strong>Местоположение:</strong> {{Location}}</p>
+        <p><strong>Готовность к переезду:</strong> {{RelocationReady}}</p>
+        <p><strong>Готовность к командировкам:</strong> {{BizTripsReady}}</p>
+        <p><strong>Телефон:</strong> {{PhoneNumber}}</p>
+        <p><strong>Email:</strong> {{Email}}</p>
+        <p><strong>Телеграм:</strong> {{Telegram}}</p>
+    </section>
 
-<section>
-    <h2>Образование</h2>
-    <p><strong>Год окончания:</strong> {{GraduationYear}}</p>
-    <p><strong>Факультет:</strong> {{Faculty}}</p>
-</section>
+    <section class="education-info">
+        <h2>Образование</h2>
+        <p><strong>Год окончания:</strong> {{GraduationYear}}</p>
+        <p><strong>Факультет:</strong> {{Faculty}}</p>
+    </section>
 
-<section>
-    <h2>Опыт работы</h2>
-    <p><strong>Должность:</strong> {{Position}}</p>
-    <p><strong>Компания:</strong> {{Company}}</p>
-    <p><strong>Дата начала:</strong> {{StartDate}}</p>
-    <p><strong>Дата окончания:</strong> {{EndDate}}</p>
-    <p><strong>Обязанности:</strong> {{Responsibilities}}</p>
-</section>
+    <section class="experience-info">
+        <h2>Опыт работы</h2>
+        <p><strong>Должность:</strong> {{Position}}</p>
+        <p><strong>Компания:</strong> {{Company}}</p>
+        <p><strong>Дата начала:</strong> {{StartDate}}</p>
+        <p><strong>Дата окончания:</strong> {{EndDate}}</p>
+        <p><strong>Обязанности:</strong> {{Responsibilities}}</p>
+    </section>
 
-<section>
-    <h2>Навыки</h2>
-    <p>{{Skills}}</p>
-</section>
+    <section class="skills-info">
+        <h2>Навыки</h2>
+        <p>{{Skills}}</p>
+    </section>
 
-<section>
-    <h2>О себе</h2>
-    <p>{{SelfDescription}}</p>
-</section>
+    <section class="about-info">
+        <h2>О себе</h2>
+        <p>{{SelfDescription}}</p>
+    </section>
 
-<section>
-    <h2>Дополнительная информация</h2>
-    <p><strong>Желаемый график работы:</strong> {{Schedule}}</p>
-    <p><strong>Объект/учреждение:</strong> {{Facility}}</p>
-</section>
+    <section class="additional-info">
+        <h2>Дополнительная информация</h2>
+        <p><strong>Желаемый график работы:</strong> {{Schedule}}</p>
+        <p><strong>Объект/учреждение:</strong> {{Facility}}</p>
+    </section>
+</div>
+
+<footer>
+    <p>© 2024 Ваше имя. Все права защищены.</p>
+</footer>
 </body>
 </html>

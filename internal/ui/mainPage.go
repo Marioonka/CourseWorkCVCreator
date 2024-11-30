@@ -10,7 +10,6 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"image/color"
 	"log"
-	"os/exec"
 )
 
 func (app *App) getMainPage() fyne.CanvasObject {
@@ -32,20 +31,23 @@ func (app *App) getMainPage() fyne.CanvasObject {
 		mainPageText.TextSize = 20
 	} else {
 		log.Println("Есть созданные резюме. Идет извлечение")
-
 		if result.Error != nil {
 			fmt.Println("Ошибка при извлечении резюме:", result.Error)
 		}
 		for _, resume := range resumes {
-
 			resumeText := resume.Position
 			if resumeText == "" {
 				log.Println("Ошибка: Пустое значение у resume.Position")
 				continue
 			}
+			SetPathsToStruct()
 			resumeLink := widget.NewHyperlink(resumeText, nil)
-			log.Println(resumeText)
 			resumeLink.OnTapped = func() {
+				Paths.GenerateResume(app.Window)
+				err := Paths.GetHtmlToPDF()
+				if err != nil {
+					fmt.Printf("Не удалось конвертировать в PDF формат. Ошибка: %v", err)
+				}
 				pdfPath := Paths.ConvertedToPdfPath
 				openPDF(pdfPath)
 				fmt.Printf("Открыто резюме: %v\n", resumeText)
@@ -71,10 +73,6 @@ func (app *App) getMainPage() fyne.CanvasObject {
 	return content
 }
 
-func openPDF(filePath string) {
-	cmd := exec.Command("xdg-open", filePath)
-	err := cmd.Start()
-	if err != nil {
-		log.Println("Ошибка открытия PDF:", err)
-	}
+func getEditButton() {
+
 }

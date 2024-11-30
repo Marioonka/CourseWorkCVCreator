@@ -9,34 +9,37 @@ import (
 	"fyne.io/fyne/v2/dialog"
 )
 
-func (paths *PathsToResumes) GenerateResume(window fyne.Window, clientData ClientsDatas) {
+func (paths *PathsToResumes) GenerateResume(window fyne.Window) {
 
 	templateContent, err := os.ReadFile(paths.TemplatePath)
 	if err != nil {
 		dialog.ShowError(fmt.Errorf("Ошибка чтения шаблона: %v", err), window)
 	}
 
+	fmt.Println(Client.FullNameEntry.Text)
+
 	htmlContent := string(templateContent)
-	htmlContent = strings.ReplaceAll(htmlContent, "{{FullName}}", clientData.FullNameEntry.Text)
-	htmlContent = strings.ReplaceAll(htmlContent, "{{Age}}", clientData.AgeEntry.Text)
-	htmlContent = strings.ReplaceAll(htmlContent, "{{Location}}", clientData.LocationEntry.Text)
-	htmlContent = strings.ReplaceAll(htmlContent, "{{RelocationReady}}", boolToString(clientData.RelocationReadyCheck.Checked))
-	htmlContent = strings.ReplaceAll(htmlContent, "{{BizTripsReady}}", boolToString(clientData.BizTripsReadyCheck.Checked))
-	htmlContent = strings.ReplaceAll(htmlContent, "{{Occupation}}", clientData.OccupationEntry.Text)
-	htmlContent = strings.ReplaceAll(htmlContent, "{{Schedule}}", clientData.ScheduleEntry.Text)
-	htmlContent = strings.ReplaceAll(htmlContent, "{{PhoneNumber}}", clientData.PhoneNumberEntry.Text)
-	htmlContent = strings.ReplaceAll(htmlContent, "{{Email}}", clientData.MailEntry.Text)
-	htmlContent = strings.ReplaceAll(htmlContent, "{{Telegram}}", clientData.TelegramEntry.Text)
-	htmlContent = strings.ReplaceAll(htmlContent, "{{Facility}}", clientData.FacilityEntry.Text)
-	htmlContent = strings.ReplaceAll(htmlContent, "{{GraduationYear}}", clientData.GraduationYearEntry.Text)
-	htmlContent = strings.ReplaceAll(htmlContent, "{{Faculty}}", clientData.FacultyEntry.Text)
-	htmlContent = strings.ReplaceAll(htmlContent, "{{Position}}", clientData.PositionEntry.Text)
-	htmlContent = strings.ReplaceAll(htmlContent, "{{Company}}", clientData.CompanyEntry.Text)
-	htmlContent = strings.ReplaceAll(htmlContent, "{{StartDate}}", clientData.StartDateEntry.Text)
-	htmlContent = strings.ReplaceAll(htmlContent, "{{EndDate}}", clientData.EndDateEntry.Text)
-	htmlContent = strings.ReplaceAll(htmlContent, "{{Responsibilities}}", clientData.ResponsibilitiesEntry.Text)
-	htmlContent = strings.ReplaceAll(htmlContent, "{{Skills}}", clientData.SkillsEntry.Text)
-	htmlContent = strings.ReplaceAll(htmlContent, "{{SelfDescription}}", clientData.SelfDescriptionEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{TargetPosition}}", Client.TargetPositionEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{FullName}}", Client.FullNameEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{Age}}", Client.AgeEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{Location}}", Client.LocationEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{RelocationReady}}", boolToString(Client.RelocationReadyCheck.Checked))
+	htmlContent = strings.ReplaceAll(htmlContent, "{{BizTripsReady}}", boolToString(Client.BizTripsReadyCheck.Checked))
+	htmlContent = strings.ReplaceAll(htmlContent, "{{Occupation}}", Client.OccupationEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{Schedule}}", Client.ScheduleEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{PhoneNumber}}", Client.PhoneNumberEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{Email}}", Client.MailEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{Telegram}}", Client.TelegramEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{Facility}}", Client.FacilityEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{GraduationYear}}", Client.GraduationYearEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{Faculty}}", Client.FacultyEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{Position}}", Client.PositionEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{Company}}", Client.CompanyEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{StartDate}}", Client.StartDateEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{EndDate}}", Client.EndDateEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{Responsibilities}}", Client.ResponsibilitiesEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{Skills}}", Client.SkillsEntry.Text)
+	htmlContent = strings.ReplaceAll(htmlContent, "{{SelfDescription}}", Client.SelfDescriptionEntry.Text)
 
 	err = os.WriteFile(paths.GeneratedResumePath, []byte(htmlContent), 0644)
 	if err != nil {
