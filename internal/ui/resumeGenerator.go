@@ -9,12 +9,11 @@ import (
 	"fyne.io/fyne/v2/dialog"
 )
 
-func GenerateResume(window fyne.Window, clientData ClientsDatas, photoBase64, templatePath, outputPath string) {
+func (paths *PathsToResumes) GenerateResume(window fyne.Window, clientData ClientsDatas) {
 
-	templateContent, err := os.ReadFile(templatePath)
+	templateContent, err := os.ReadFile(paths.TemplatePath)
 	if err != nil {
 		dialog.ShowError(fmt.Errorf("Ошибка чтения шаблона: %v", err), window)
-		return
 	}
 
 	htmlContent := string(templateContent)
@@ -39,10 +38,9 @@ func GenerateResume(window fyne.Window, clientData ClientsDatas, photoBase64, te
 	htmlContent = strings.ReplaceAll(htmlContent, "{{Skills}}", clientData.SkillsEntry.Text)
 	htmlContent = strings.ReplaceAll(htmlContent, "{{SelfDescription}}", clientData.SelfDescriptionEntry.Text)
 
-	err = os.WriteFile(outputPath, []byte(htmlContent), 0644)
+	err = os.WriteFile(paths.GeneratedResumePath, []byte(htmlContent), 0644)
 	if err != nil {
 		dialog.ShowError(fmt.Errorf("Ошибка сохранения резюме: %v", err), window)
-		return
 	}
 
 	dialog.ShowInformation("Резюме сгенерировано", "Ваше резюме успешно сгенерировано!", window)

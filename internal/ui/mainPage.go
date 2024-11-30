@@ -10,6 +10,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"image/color"
 	"log"
+	"os/exec"
 )
 
 func (app *App) getMainPage() fyne.CanvasObject {
@@ -40,11 +41,13 @@ func (app *App) getMainPage() fyne.CanvasObject {
 			resumeText := resume.Position
 			if resumeText == "" {
 				log.Println("Ошибка: Пустое значение у resume.Position")
-				continue // Пропустите резюме без позиции
+				continue
 			}
 			resumeLink := widget.NewHyperlink(resumeText, nil)
 			log.Println(resumeText)
 			resumeLink.OnTapped = func() {
+				pdfPath := Paths.ConvertedToPdfPath
+				openPDF(pdfPath)
 				fmt.Printf("Открыто резюме: %v\n", resumeText)
 			}
 			listOfResumes.Add(resumeLink)
@@ -66,4 +69,12 @@ func (app *App) getMainPage() fyne.CanvasObject {
 		container.NewGridWithColumns(3, widget.NewLabel(""), widget.NewLabel(""), createButton),
 	)
 	return content
+}
+
+func openPDF(filePath string) {
+	cmd := exec.Command("xdg-open", filePath)
+	err := cmd.Start()
+	if err != nil {
+		log.Println("Ошибка открытия PDF:", err)
+	}
 }

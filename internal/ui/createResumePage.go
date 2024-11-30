@@ -15,10 +15,10 @@ import (
 )
 
 var Client *ClientsDatas
+var Paths *PathsToResumes
 var encoded string
 
 func (app *App) CreateResume() fyne.CanvasObject {
-	log.Println("Страница создания резюме начала открываться")
 	namePageText := canvas.NewText("Создание резюме", nil)
 	namePageText.TextSize = 14
 
@@ -29,18 +29,15 @@ func (app *App) CreateResume() fyne.CanvasObject {
 	fillTheFormsText.TextSize = 24
 
 	inputAllDatas()
-	log.Println("Все данные были введены")
 
 	positionContainer := createTargetPositionData()
-	personalDataContainer := createPersonalData(app.Window)
+	personalDataContainer, _ := createPersonalData(app.Window)
 	contactsContainer := createContactData()
 	workConditionContainer := createWorkConditions()
 	experienceContainer := createWorkExperience()
 	educationContainer := createEduExperience()
 	skillsContainer := createSkillsData()
 	aboutContainer := createAboutData()
-
-	log.Println("Все контейнеры были заполнены")
 
 	divider := func() *canvas.Line {
 		line := canvas.NewLine(color.Gray{Y: 1})
@@ -87,9 +84,20 @@ func (app *App) CreateResume() fyne.CanvasObject {
 		aboutContainer,
 		container.NewGridWithColumns(3, widget.NewLabel(""), app.createSaveButton()),
 	)
-	log.Println("Весь контент был сформирован")
-
+	setPathsToStruct()
+	Paths.GenerateResume(app.Window, ClientsDatas{})
 	return container.NewScroll(formContent)
+}
+
+func setPathsToStruct() {
+	template, _ := helpers.GetPathToFile("professional_resume.html")
+	outGenerated, _ := helpers.GetPathToFile("generatedResume.html")
+	htmlToPdf, _ := helpers.GetPathToFile("generatedPDF.pdf")
+	Paths = &PathsToResumes{
+		TemplatePath:        template,
+		GeneratedResumePath: outGenerated,
+		ConvertedToPdfPath:  htmlToPdf,
+	}
 }
 
 func inputAllDatas() {
@@ -166,7 +174,7 @@ func addEducationForm(cont *fyne.Container) {
 	cont.Add(educationForm)
 }
 
-func createPersonalData(window fyne.Window) *fyne.Container {
+func createPersonalData(window fyne.Window) (*fyne.Container, string) {
 	pInfoTitle := canvas.NewText("Личные данные", color.White)
 	pInfoTitle.TextSize = 16
 
@@ -206,7 +214,7 @@ func createPersonalData(window fyne.Window) *fyne.Container {
 		ageLabel, Client.AgeEntry,
 		photoLabel, photoEntry,
 		photoPathLabel,
-	)
+	), encoded
 }
 
 func createContactData() *fyne.Container {

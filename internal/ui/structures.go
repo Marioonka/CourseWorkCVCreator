@@ -37,3 +37,9 @@ type ClientsDatas struct {
 	SkillsEntry           *widget.Entry
 	SelfDescriptionEntry  *widget.Entry
 }
+
+type PathsToResumes struct {
+	TemplatePath        string
+	GeneratedResumePath string
+	ConvertedToPdfPath  string
+}
