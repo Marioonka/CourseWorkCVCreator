@@ -14,7 +14,7 @@ type App struct {
 	CurPage  fyne.CanvasObject
 }
 
-type ClientsDatas struct {
+type ResumeEntries struct {
 	TargetPositionEntry   *widget.Entry
 	FullNameEntry         *widget.Entry
 	AgeEntry              *widget.Entry

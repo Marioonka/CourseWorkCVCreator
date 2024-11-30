@@ -6,10 +6,12 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 	"image/color"
 	"log"
+	"os"
 )
 
 func (app *App) getMainPage() fyne.CanvasObject {
@@ -35,30 +37,18 @@ func (app *App) getMainPage() fyne.CanvasObject {
 			fmt.Println("Ошибка при извлечении резюме:", result.Error)
 		}
 		for _, resume := range resumes {
-			resumeText := resume.Position
-			if resumeText == "" {
-				log.Println("Ошибка: Пустое значение у resume.Position")
+			link, err := app.getResumeLink(resume)
+			if err != nil {
+				listOfResumes.Add(widget.NewLabel(err.Error()))
 				continue
 			}
-			SetPathsToStruct()
-			resumeLink := widget.NewHyperlink(resumeText, nil)
-			resumeLink.OnTapped = func() {
-				Paths.GenerateResume(app.Window)
-				err := Paths.GetHtmlToPDF()
-				if err != nil {
-					fmt.Printf("Не удалось конвертировать в PDF формат. Ошибка: %v", err)
-				}
-				pdfPath := Paths.ConvertedToPdfPath
-				openPDF(pdfPath)
-				fmt.Printf("Открыто резюме: %v\n", resumeText)
-			}
-			listOfResumes.Add(resumeLink)
+			listOfResumes.Add(link)
 		}
 		log.Println(listOfResumes)
 	}
 
 	createButton := widget.NewButton("Создать новое резюме", func() {
-		app.ChangePage(app.CreateResume())
+		app.ChangePage(app.NewResumeCreatorPage())
 	})
 
 	content := container.NewVBox(
@@ -71,6 +61,34 @@ func (app *App) getMainPage() fyne.CanvasObject {
 		container.NewGridWithColumns(3, widget.NewLabel(""), widget.NewLabel(""), createButton),
 	)
 	return content
+}
+
+func (app *App) getResumeLink(resume models.Resume) (*widget.Hyperlink, error) {
+	resumeText := resume.TargetPosition
+	if resumeText == "" {
+		return nil, fmt.Errorf("Ошибка: Пустое значение у resume.TargetPosition")
+	}
+	paths := NewPaths()
+	resumeLink := widget.NewHyperlink(resumeText, nil)
+	resumeLink.OnTapped = func() {
+		content, err := paths.GenerateHtmlResumeContent(resume)
+		if err != nil {
+			dialog.ShowError(err, app.Window)
+		}
+		err = os.WriteFile(paths.GeneratedResumePath, []byte(content), 0644)
+		if err != nil {
+			dialog.ShowError(fmt.Errorf("Ошибка сохранения резюме: %v", err), app.Window)
+		}
+		err = paths.GetHtmlToPDF()
+		if err != nil {
+			fmt.Printf("Не удалось конвертировать в PDF формат. Ошибка: %v", err)
+		}
+		pdfPath := paths.ConvertedToPdfPath
+		openPDF(pdfPath)
+		fmt.Printf("Открыто резюме: %v\n", resumeText)
+	}
+
+	return resumeLink, nil
 }
 
 func getEditButton() {

@@ -4,21 +4,18 @@ import (
 	"coursework/helpers"
 	"coursework/internal/models"
 	"fmt"
-	"image/color"
-	"log"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
+	"image/color"
 )
 
-var Client *ClientsDatas
-var Paths *PathsToResumes
+var ResumeData *ResumeEntries
 var encoded string
 
-func (app *App) CreateResume() fyne.CanvasObject {
+func (app *App) NewResumeCreatorPage() fyne.CanvasObject {
 	namePageText := canvas.NewText("Создание резюме", nil)
 	namePageText.TextSize = 14
 
@@ -28,10 +25,10 @@ func (app *App) CreateResume() fyne.CanvasObject {
 	fillTheFormsText := canvas.NewText("Заполните поля для резюме", nil)
 	fillTheFormsText.TextSize = 24
 
-	inputAllDatas()
+	ResumeData = NewResumeEntries()
 
 	positionContainer := createTargetPositionData()
-	personalDataContainer, _ := createPersonalData(app.Window)
+	personalDataContainer := createPersonalData()
 	contactsContainer := createContactData()
 	workConditionContainer := createWorkConditions()
 	experienceContainer := createWorkExperience()
@@ -82,24 +79,24 @@ func (app *App) CreateResume() fyne.CanvasObject {
 
 		// О себе
 		aboutContainer,
-		container.NewGridWithColumns(3, widget.NewLabel(""), app.createSaveButton()),
+		container.NewGridWithColumns(3, widget.NewLabel(""), app.getSaveButton()),
 	)
 	return container.NewScroll(formContent)
 }
 
-func SetPathsToStruct() {
-	template, _ := helpers.GetPathToFile("professional_resume.html")
+func NewPaths() *PathsToResumes {
+	template, _ := helpers.GetPathToFile("resumeTemplate.html")
 	outGenerated, _ := helpers.GetPathToFile("generatedResume.html")
 	htmlToPdf, _ := helpers.GetPathToFile("generatedPDF.pdf")
-	Paths = &PathsToResumes{
+	return &PathsToResumes{
 		TemplatePath:        template,
 		GeneratedResumePath: outGenerated,
 		ConvertedToPdfPath:  htmlToPdf,
 	}
 }
 
-func inputAllDatas() {
-	Client = &ClientsDatas{
+func NewResumeEntries() *ResumeEntries {
+	resume := &ResumeEntries{
 
 		TargetPositionEntry: widget.NewEntry(),
 
@@ -130,21 +127,23 @@ func inputAllDatas() {
 
 		SelfDescriptionEntry: widget.NewMultiLineEntry(),
 	}
+
+	return resume
 }
 
 func addExperienceForm(cont *fyne.Container) {
 
 	experienceForm := container.NewVBox(
 		widget.NewLabel("Должность:"),
-		Client.PositionEntry,
+		ResumeData.PositionEntry,
 		widget.NewLabel("Компания:"),
-		Client.CompanyEntry,
+		ResumeData.CompanyEntry,
 		widget.NewLabel("Дата начала:"),
-		Client.StartDateEntry,
+		ResumeData.StartDateEntry,
 		widget.NewLabel("Дата окончания:"),
-		Client.EndDateEntry,
+		ResumeData.EndDateEntry,
 		widget.NewLabel("Обязанности:"),
-		Client.ResponsibilitiesEntry,
+		ResumeData.ResponsibilitiesEntry,
 	)
 
 	cont.Add(experienceForm)
@@ -154,7 +153,7 @@ func createTargetPositionData() *fyne.Container {
 	PosTitle := canvas.NewText("Желаемая должность", color.White)
 	PosTitle.TextSize = 16
 	return container.NewVBox(
-		PosTitle, Client.TargetPositionEntry,
+		PosTitle, ResumeData.TargetPositionEntry,
 	)
 }
 
@@ -162,57 +161,28 @@ func addEducationForm(cont *fyne.Container) {
 
 	educationForm := container.NewVBox(
 		widget.NewLabel("Учреждение:"),
-		Client.FacilityEntry,
+		ResumeData.FacilityEntry,
 		widget.NewLabel("Год окончания:"),
-		Client.GraduationYearEntry,
+		ResumeData.GraduationYearEntry,
 		widget.NewLabel("Факультет:"),
-		Client.FacultyEntry,
+		ResumeData.FacultyEntry,
 	)
 
 	cont.Add(educationForm)
 }
 
-func createPersonalData(window fyne.Window) (*fyne.Container, string) {
+func createPersonalData() *fyne.Container {
 	pInfoTitle := canvas.NewText("Личные данные", color.White)
 	pInfoTitle.TextSize = 16
 
 	fullNameLabel := widget.NewLabel("ФИО:")
 	ageLabel := widget.NewLabel("Возраст:")
 
-	// Фото
-	photoLabel := widget.NewLabel("Фото:")
-	photoPathLabel := widget.NewLabel("")
-	photoEntry := widget.NewButton("Загрузите фото", func() {
-		dialog.NewFileOpen(func(file fyne.URIReadCloser, err error) {
-			if err != nil {
-				log.Println("Ошибка открытия файла:", err)
-				return
-			}
-			if file == nil {
-				log.Println("Файл не выбран")
-				return
-			}
-
-			filePath := file.URI().Path()
-			log.Println("Выбран файл:", filePath)
-
-			encoded, err = helpers.EncodeImageToBase64(filePath)
-			if err != nil {
-				log.Println("Ошибка кодирования:", err)
-				return
-			}
-			photoPathLabel.SetText(filePath)
-
-			file.Close()
-		}, window).Show()
-	})
 	return container.NewVBox(
 		pInfoTitle,
-		fullNameLabel, Client.FullNameEntry,
-		ageLabel, Client.AgeEntry,
-		photoLabel, photoEntry,
-		photoPathLabel,
-	), encoded
+		fullNameLabel, ResumeData.FullNameEntry,
+		ageLabel, ResumeData.AgeEntry,
+	)
 }
 
 func createContactData() *fyne.Container {
@@ -225,9 +195,9 @@ func createContactData() *fyne.Container {
 
 	return container.NewVBox(
 		contactsTitle,
-		phoneNumberLabel, Client.PhoneNumberEntry,
-		mailLabel, Client.MailEntry,
-		telegramLabel, Client.TelegramEntry)
+		phoneNumberLabel, ResumeData.PhoneNumberEntry,
+		mailLabel, ResumeData.MailEntry,
+		telegramLabel, ResumeData.TelegramEntry)
 }
 
 func createWorkConditions() *fyne.Container {
@@ -242,11 +212,11 @@ func createWorkConditions() *fyne.Container {
 
 	return container.NewVBox(
 		conditionsTitle,
-		locationLabel, Client.LocationEntry,
-		occupationLabel, Client.OccupationEntry,
-		scheduleLabel, Client.ScheduleEntry,
-		relocationReadyLabel, Client.RelocationReadyCheck,
-		bizTripsReadyLabel, Client.BizTripsReadyCheck,
+		locationLabel, ResumeData.LocationEntry,
+		occupationLabel, ResumeData.OccupationEntry,
+		scheduleLabel, ResumeData.ScheduleEntry,
+		relocationReadyLabel, ResumeData.RelocationReadyCheck,
+		bizTripsReadyLabel, ResumeData.BizTripsReadyCheck,
 	)
 }
 
@@ -263,15 +233,15 @@ func createWorkExperience() *fyne.Container {
 		experienceTitle,
 		widget.NewSeparator(),
 		positionLabel,
-		Client.PositionEntry,
+		ResumeData.PositionEntry,
 		companyLabel,
-		Client.CompanyEntry,
+		ResumeData.CompanyEntry,
 		startDateLabel,
-		Client.StartDateEntry,
+		ResumeData.StartDateEntry,
 		endDateLabel,
-		Client.EndDateEntry,
+		ResumeData.EndDateEntry,
 		responsibilitiesLabel,
-		Client.ResponsibilitiesEntry,
+		ResumeData.ResponsibilitiesEntry,
 	)
 	addExperienceButton := widget.NewButton("Добавить опыт работы", func() {
 		addExperienceForm(experienceForm)
@@ -292,11 +262,11 @@ func createEduExperience() *fyne.Container {
 		educationTitle,
 		widget.NewSeparator(),
 		facilityLabel,
-		Client.FacilityEntry,
+		ResumeData.FacilityEntry,
 		graduationYearLabel,
-		Client.GraduationYearEntry,
+		ResumeData.GraduationYearEntry,
 		facultyLabel,
-		Client.FacultyEntry,
+		ResumeData.FacultyEntry,
 	)
 	addEduButton := widget.NewButton("Добавить образование", func() {
 		addEducationForm(educationForm)
@@ -311,7 +281,7 @@ func createSkillsData() *fyne.Container {
 	skillsTitle := canvas.NewText("Навыки", color.White)
 	skillsTitle.TextSize = 16
 	return container.NewVBox(
-		skillsTitle, Client.SkillsEntry,
+		skillsTitle, ResumeData.SkillsEntry,
 	)
 }
 
@@ -320,47 +290,46 @@ func createAboutData() *fyne.Container {
 	aboutTitle := canvas.NewText("О себе", color.White)
 	aboutTitle.TextSize = 16
 	return container.NewVBox(
-		aboutTitle, Client.SelfDescriptionEntry,
+		aboutTitle, ResumeData.SelfDescriptionEntry,
 	)
 }
 
-func (app *App) createSaveButton() *widget.Button {
+func (app *App) getSaveButton() *widget.Button {
 	saveButton := widget.NewButton("Сохранить резюме", func() {
 
 		fmt.Println("ID пользователя текущей сессии - ", app.UserID)
 
 		resume := models.Resume{
 			UserID:          app.UserID,
-			Position:        Client.TargetPositionEntry.Text,
-			FullName:        Client.FullNameEntry.Text,
-			Age:             Client.AgeEntry.Text,
-			Photo:           encoded,
-			Location:        Client.LocationEntry.Text,
-			RelocationReady: Client.RelocationReadyCheck.Checked,
-			BizTripsReady:   Client.BizTripsReadyCheck.Checked,
-			Occupation:      Client.OccupationEntry.Text,
-			Schedule:        Client.ScheduleEntry.Text,
+			TargetPosition:  ResumeData.TargetPositionEntry.Text,
+			FullName:        ResumeData.FullNameEntry.Text,
+			Age:             ResumeData.AgeEntry.Text,
+			Location:        ResumeData.LocationEntry.Text,
+			RelocationReady: ResumeData.RelocationReadyCheck.Checked,
+			BizTripsReady:   ResumeData.BizTripsReadyCheck.Checked,
+			Occupation:      ResumeData.OccupationEntry.Text,
+			Schedule:        ResumeData.ScheduleEntry.Text,
 			Contacts: models.Contact{
-				PhoneNumber: Client.PhoneNumberEntry.Text,
-				MailAddress: Client.MailEntry.Text,
-				Telegram:    Client.MailEntry.Text,
+				PhoneNumber: ResumeData.PhoneNumberEntry.Text,
+				MailAddress: ResumeData.MailEntry.Text,
+				Telegram:    ResumeData.MailEntry.Text,
 			},
 			Education: []models.Education{models.Education{
-				Facility:       Client.FacilityEntry.Text,
-				GraduationYear: Client.GraduationYearEntry.Text,
-				Faculty:        Client.FacultyEntry.Text,
+				Facility:       ResumeData.FacilityEntry.Text,
+				GraduationYear: ResumeData.GraduationYearEntry.Text,
+				Faculty:        ResumeData.FacultyEntry.Text,
 			},
 			},
-			Experience: []models.ResumeExperience{models.ResumeExperience{
-				Position:         Client.PositionEntry.Text,
-				Company:          Client.CompanyEntry.Text,
-				StartDate:        Client.StartDateEntry.Text,
-				EndDate:          Client.EndDateEntry.Text,
-				Responsibilities: Client.ResponsibilitiesEntry.Text,
+			Experience: []models.Experience{models.Experience{
+				Position:         ResumeData.PositionEntry.Text,
+				Company:          ResumeData.CompanyEntry.Text,
+				StartDate:        ResumeData.StartDateEntry.Text,
+				EndDate:          ResumeData.EndDateEntry.Text,
+				Responsibilities: ResumeData.ResponsibilitiesEntry.Text,
 			},
 			},
-			Skills:          Client.SkillsEntry.Text,
-			SelfDescription: Client.SelfDescriptionEntry.Text,
+			Skills:          ResumeData.SkillsEntry.Text,
+			SelfDescription: ResumeData.SelfDescriptionEntry.Text,
 		}
 		if err := app.DB.Create(&resume).Error; err != nil {
 			dialog.ShowError(err, app.Window)

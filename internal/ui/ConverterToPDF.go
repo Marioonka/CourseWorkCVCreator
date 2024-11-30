@@ -18,21 +18,21 @@ func (paths *PathsToResumes) GetHtmlToPDF() error {
 		return err
 	}
 
-	pdfg, err := wkhtmltopdf.NewPDFGenerator()
+	pdfGen, err := wkhtmltopdf.NewPDFGenerator()
 	if err != nil {
 		return err
 	}
 
 	page := wkhtmltopdf.NewPageReader(strings.NewReader(string(htmlFile)))
 
-	pdfg.AddPage(page)
+	pdfGen.AddPage(page)
 
-	err = pdfg.Create()
+	err = pdfGen.Create()
 	if err != nil {
 		return err
 	}
 
-	err = pdfg.WriteFile(paths.ConvertedToPdfPath)
+	err = pdfGen.WriteFile(paths.ConvertedToPdfPath)
 	log.Printf("PDF успешно сохранен в %s\n", paths.ConvertedToPdfPath)
 	return err
 }

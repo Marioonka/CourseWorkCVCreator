@@ -22,7 +22,7 @@ func (app *App) BackButton() *widget.Button {
 }
 
 func openPDF(filePath string) {
-	cmd := exec.Command("xdg-open", filePath)
+	cmd := exec.Command("open", filePath)
 	err := cmd.Start()
 	if err != nil {
 		log.Println("Ошибка открытия PDF:", err)
