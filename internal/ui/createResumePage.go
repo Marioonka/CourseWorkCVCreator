@@ -12,8 +12,10 @@ import (
 	"image/color"
 )
 
-var ResumeData *ResumeEntries
-var encoded string
+var PersonalData *PersonalEntry
+var ContactData *ContactEntry
+var EducationData *EducationEntry
+var ExperienceData *ExperienceEntry
 
 func (app *App) NewResumeCreatorPage() fyne.CanvasObject {
 	namePageText := canvas.NewText("Создание резюме", nil)
@@ -25,7 +27,7 @@ func (app *App) NewResumeCreatorPage() fyne.CanvasObject {
 	fillTheFormsText := canvas.NewText("Заполните поля для резюме", nil)
 	fillTheFormsText.TextSize = 24
 
-	ResumeData = NewResumeEntries()
+	PersonalData, ContactData, ExperienceData, EducationData = NewResumeEntries()
 
 	positionContainer := createTargetPositionData()
 	personalDataContainer := createPersonalData()
@@ -95,8 +97,8 @@ func NewPaths() *PathsToResumes {
 	}
 }
 
-func NewResumeEntries() *ResumeEntries {
-	resume := &ResumeEntries{
+func NewResumeEntries() (*PersonalEntry, *ContactEntry, *ExperienceEntry, *EducationEntry) {
+	personal := &PersonalEntry{
 
 		TargetPositionEntry: widget.NewEntry(),
 
@@ -109,41 +111,47 @@ func NewResumeEntries() *ResumeEntries {
 		RelocationReadyCheck: widget.NewCheck("", nil),
 		BizTripsReadyCheck:   widget.NewCheck("", nil),
 
-		PhoneNumberEntry: widget.NewEntry(),
-		MailEntry:        widget.NewEntry(),
-		TelegramEntry:    widget.NewEntry(),
-
-		PositionEntry:         widget.NewEntry(),
-		CompanyEntry:          widget.NewEntry(),
-		StartDateEntry:        widget.NewEntry(),
-		EndDateEntry:          widget.NewEntry(),
-		ResponsibilitiesEntry: widget.NewMultiLineEntry(),
-
-		FacilityEntry:       widget.NewEntry(),
-		GraduationYearEntry: widget.NewEntry(),
-		FacultyEntry:        widget.NewEntry(),
-
 		SkillsEntry: widget.NewMultiLineEntry(),
 
 		SelfDescriptionEntry: widget.NewMultiLineEntry(),
 	}
 
-	return resume
+	contact := &ContactEntry{
+		PhoneNumberEntry: widget.NewEntry(),
+		MailEntry:        widget.NewEntry(),
+		TelegramEntry:    widget.NewEntry(),
+	}
+
+	experience := &ExperienceEntry{
+		PositionEntry:         widget.NewEntry(),
+		CompanyEntry:          widget.NewEntry(),
+		StartDateEntry:        widget.NewEntry(),
+		EndDateEntry:          widget.NewEntry(),
+		ResponsibilitiesEntry: widget.NewMultiLineEntry(),
+	}
+
+	education := &EducationEntry{
+		FacilityEntry:       widget.NewEntry(),
+		GraduationYearEntry: widget.NewEntry(),
+		FacultyEntry:        widget.NewEntry(),
+	}
+
+	return personal, contact, experience, education
 }
 
 func addExperienceForm(cont *fyne.Container) {
 
 	experienceForm := container.NewVBox(
 		widget.NewLabel("Должность:"),
-		ResumeData.PositionEntry,
+		ExperienceData.PositionEntry,
 		widget.NewLabel("Компания:"),
-		ResumeData.CompanyEntry,
+		ExperienceData.CompanyEntry,
 		widget.NewLabel("Дата начала:"),
-		ResumeData.StartDateEntry,
+		ExperienceData.StartDateEntry,
 		widget.NewLabel("Дата окончания:"),
-		ResumeData.EndDateEntry,
+		ExperienceData.EndDateEntry,
 		widget.NewLabel("Обязанности:"),
-		ResumeData.ResponsibilitiesEntry,
+		ExperienceData.ResponsibilitiesEntry,
 	)
 
 	cont.Add(experienceForm)
@@ -153,7 +161,7 @@ func createTargetPositionData() *fyne.Container {
 	PosTitle := canvas.NewText("Желаемая должность", color.White)
 	PosTitle.TextSize = 16
 	return container.NewVBox(
-		PosTitle, ResumeData.TargetPositionEntry,
+		PosTitle, PersonalData.TargetPositionEntry,
 	)
 }
 
@@ -161,11 +169,11 @@ func addEducationForm(cont *fyne.Container) {
 
 	educationForm := container.NewVBox(
 		widget.NewLabel("Учреждение:"),
-		ResumeData.FacilityEntry,
+		EducationData.FacilityEntry,
 		widget.NewLabel("Год окончания:"),
-		ResumeData.GraduationYearEntry,
+		EducationData.GraduationYearEntry,
 		widget.NewLabel("Факультет:"),
-		ResumeData.FacultyEntry,
+		EducationData.FacultyEntry,
 	)
 
 	cont.Add(educationForm)
@@ -180,8 +188,8 @@ func createPersonalData() *fyne.Container {
 
 	return container.NewVBox(
 		pInfoTitle,
-		fullNameLabel, ResumeData.FullNameEntry,
-		ageLabel, ResumeData.AgeEntry,
+		fullNameLabel, PersonalData.FullNameEntry,
+		ageLabel, PersonalData.AgeEntry,
 	)
 }
 
@@ -195,9 +203,9 @@ func createContactData() *fyne.Container {
 
 	return container.NewVBox(
 		contactsTitle,
-		phoneNumberLabel, ResumeData.PhoneNumberEntry,
-		mailLabel, ResumeData.MailEntry,
-		telegramLabel, ResumeData.TelegramEntry)
+		phoneNumberLabel, ContactData.PhoneNumberEntry,
+		mailLabel, ContactData.MailEntry,
+		telegramLabel, ContactData.TelegramEntry)
 }
 
 func createWorkConditions() *fyne.Container {
@@ -212,11 +220,11 @@ func createWorkConditions() *fyne.Container {
 
 	return container.NewVBox(
 		conditionsTitle,
-		locationLabel, ResumeData.LocationEntry,
-		occupationLabel, ResumeData.OccupationEntry,
-		scheduleLabel, ResumeData.ScheduleEntry,
-		relocationReadyLabel, ResumeData.RelocationReadyCheck,
-		bizTripsReadyLabel, ResumeData.BizTripsReadyCheck,
+		locationLabel, PersonalData.LocationEntry,
+		occupationLabel, PersonalData.OccupationEntry,
+		scheduleLabel, PersonalData.ScheduleEntry,
+		relocationReadyLabel, PersonalData.RelocationReadyCheck,
+		bizTripsReadyLabel, PersonalData.BizTripsReadyCheck,
 	)
 }
 
@@ -233,15 +241,15 @@ func createWorkExperience() *fyne.Container {
 		experienceTitle,
 		widget.NewSeparator(),
 		positionLabel,
-		ResumeData.PositionEntry,
+		ExperienceData.PositionEntry,
 		companyLabel,
-		ResumeData.CompanyEntry,
+		ExperienceData.CompanyEntry,
 		startDateLabel,
-		ResumeData.StartDateEntry,
+		ExperienceData.StartDateEntry,
 		endDateLabel,
-		ResumeData.EndDateEntry,
+		ExperienceData.EndDateEntry,
 		responsibilitiesLabel,
-		ResumeData.ResponsibilitiesEntry,
+		ExperienceData.ResponsibilitiesEntry,
 	)
 	addExperienceButton := widget.NewButton("Добавить опыт работы", func() {
 		addExperienceForm(experienceForm)
@@ -252,7 +260,6 @@ func createWorkExperience() *fyne.Container {
 }
 
 func createEduExperience() *fyne.Container {
-
 	educationTitle := canvas.NewText("Образование", color.White)
 	educationTitle.TextSize = 16
 	facilityLabel := widget.NewLabel("Учреждение:")
@@ -262,11 +269,11 @@ func createEduExperience() *fyne.Container {
 		educationTitle,
 		widget.NewSeparator(),
 		facilityLabel,
-		ResumeData.FacilityEntry,
+		EducationData.FacilityEntry,
 		graduationYearLabel,
-		ResumeData.GraduationYearEntry,
+		EducationData.GraduationYearEntry,
 		facultyLabel,
-		ResumeData.FacultyEntry,
+		EducationData.FacultyEntry,
 	)
 	addEduButton := widget.NewButton("Добавить образование", func() {
 		addEducationForm(educationForm)
@@ -277,11 +284,10 @@ func createEduExperience() *fyne.Container {
 }
 
 func createSkillsData() *fyne.Container {
-
 	skillsTitle := canvas.NewText("Навыки", color.White)
 	skillsTitle.TextSize = 16
 	return container.NewVBox(
-		skillsTitle, ResumeData.SkillsEntry,
+		skillsTitle, PersonalData.SkillsEntry,
 	)
 }
 
@@ -290,7 +296,7 @@ func createAboutData() *fyne.Container {
 	aboutTitle := canvas.NewText("О себе", color.White)
 	aboutTitle.TextSize = 16
 	return container.NewVBox(
-		aboutTitle, ResumeData.SelfDescriptionEntry,
+		aboutTitle, PersonalData.SelfDescriptionEntry,
 	)
 }
 
@@ -301,35 +307,35 @@ func (app *App) getSaveButton() *widget.Button {
 
 		resume := models.Resume{
 			UserID:          app.UserID,
-			TargetPosition:  ResumeData.TargetPositionEntry.Text,
-			FullName:        ResumeData.FullNameEntry.Text,
-			Age:             ResumeData.AgeEntry.Text,
-			Location:        ResumeData.LocationEntry.Text,
-			RelocationReady: ResumeData.RelocationReadyCheck.Checked,
-			BizTripsReady:   ResumeData.BizTripsReadyCheck.Checked,
-			Occupation:      ResumeData.OccupationEntry.Text,
-			Schedule:        ResumeData.ScheduleEntry.Text,
+			TargetPosition:  PersonalData.TargetPositionEntry.Text,
+			FullName:        PersonalData.FullNameEntry.Text,
+			Age:             PersonalData.AgeEntry.Text,
+			Location:        PersonalData.LocationEntry.Text,
+			RelocationReady: PersonalData.RelocationReadyCheck.Checked,
+			BizTripsReady:   PersonalData.BizTripsReadyCheck.Checked,
+			Occupation:      PersonalData.OccupationEntry.Text,
+			Schedule:        PersonalData.ScheduleEntry.Text,
 			Contacts: models.Contact{
-				PhoneNumber: ResumeData.PhoneNumberEntry.Text,
-				MailAddress: ResumeData.MailEntry.Text,
-				Telegram:    ResumeData.MailEntry.Text,
+				PhoneNumber: ContactData.PhoneNumberEntry.Text,
+				MailAddress: ContactData.MailEntry.Text,
+				Telegram:    ContactData.MailEntry.Text,
 			},
-			Education: []models.Education{models.Education{
-				Facility:       ResumeData.FacilityEntry.Text,
-				GraduationYear: ResumeData.GraduationYearEntry.Text,
-				Faculty:        ResumeData.FacultyEntry.Text,
-			},
-			},
-			Experience: []models.Experience{models.Experience{
-				Position:         ResumeData.PositionEntry.Text,
-				Company:          ResumeData.CompanyEntry.Text,
-				StartDate:        ResumeData.StartDateEntry.Text,
-				EndDate:          ResumeData.EndDateEntry.Text,
-				Responsibilities: ResumeData.ResponsibilitiesEntry.Text,
+			Education: []models.Education{{
+				Facility:       EducationData.FacilityEntry.Text,
+				GraduationYear: EducationData.GraduationYearEntry.Text,
+				Faculty:        EducationData.FacultyEntry.Text,
 			},
 			},
-			Skills:          ResumeData.SkillsEntry.Text,
-			SelfDescription: ResumeData.SelfDescriptionEntry.Text,
+			Experience: []models.Experience{{
+				Position:         ExperienceData.PositionEntry.Text,
+				Company:          ExperienceData.CompanyEntry.Text,
+				StartDate:        ExperienceData.StartDateEntry.Text,
+				EndDate:          ExperienceData.EndDateEntry.Text,
+				Responsibilities: ExperienceData.ResponsibilitiesEntry.Text,
+			},
+			},
+			Skills:          PersonalData.SkillsEntry.Text,
+			SelfDescription: PersonalData.SelfDescriptionEntry.Text,
 		}
 		if err := app.DB.Create(&resume).Error; err != nil {
 			dialog.ShowError(err, app.Window)
@@ -337,7 +343,6 @@ func (app *App) getSaveButton() *widget.Button {
 		}
 
 		dialog.ShowInformation("Резюме сохранено", "Ваше резюме успешно сохранено!", app.Window)
-
 		templatesPage := app.getMainPage()
 		app.ChangePage(templatesPage)
 	})

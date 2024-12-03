@@ -23,8 +23,10 @@ func (app *App) getMainPage() fyne.CanvasObject {
 
 	var mainPageText canvas.Text
 	var resumes []models.Resume
+
 	listOfResumes := container.NewVBox()
-	result := app.DB.Model(&models.Resume{}).Where("user_id = ?", app.UserID).Find(&resumes)
+	resumeData := app.DB.Model(&models.Resume{}).Where("user_id = ?", app.UserID).Find(&resumes)
+
 	numberOfResumes := len(resumes)
 	log.Println(numberOfResumes)
 
@@ -33,11 +35,19 @@ func (app *App) getMainPage() fyne.CanvasObject {
 		mainPageText.TextSize = 20
 	} else {
 		log.Println("Есть созданные резюме. Идет извлечение")
-		if result.Error != nil {
-			fmt.Println("Ошибка при извлечении резюме:", result.Error)
+		if resumeData.Error != nil {
+			fmt.Println("Ошибка при извлечении резюме:", resumeData.Error)
 		}
 		for _, resume := range resumes {
-			link, err := app.getResumeLink(resume)
+			var contacts models.Contact
+			var educations []models.Education
+			var experiences []models.Experience
+
+			app.DB.Model(&models.Contact{}).Where("resume_id = ?", resume.ID).Find(&contacts)
+			app.DB.Model(&models.Education{}).Where("resume_id = ?", resume.ID).Find(&educations)
+			app.DB.Model(&models.Experience{}).Where("resume_id = ?", resume.ID).Find(&experiences)
+
+			link, err := app.getResumeLink(resume, contacts, educations, experiences)
 			if err != nil {
 				listOfResumes.Add(widget.NewLabel(err.Error()))
 				continue
@@ -63,15 +73,15 @@ func (app *App) getMainPage() fyne.CanvasObject {
 	return content
 }
 
-func (app *App) getResumeLink(resume models.Resume) (*widget.Hyperlink, error) {
+func (app *App) getResumeLink(resume models.Resume, contacts models.Contact, educations []models.Education, experiences []models.Experience) (*widget.Hyperlink, error) {
 	resumeText := resume.TargetPosition
 	if resumeText == "" {
-		return nil, fmt.Errorf("Ошибка: Пустое значение у resume.TargetPosition")
+		return nil, fmt.Errorf("ошибка: Пустое значение у resume.TargetPosition")
 	}
 	paths := NewPaths()
 	resumeLink := widget.NewHyperlink(resumeText, nil)
 	resumeLink.OnTapped = func() {
-		content, err := paths.GenerateHtmlResumeContent(resume)
+		content, err := paths.GenerateHtmlResumeContent(resume, contacts, educations, experiences)
 		if err != nil {
 			dialog.ShowError(err, app.Window)
 		}
@@ -91,6 +101,10 @@ func (app *App) getResumeLink(resume models.Resume) (*widget.Hyperlink, error) {
 	return resumeLink, nil
 }
 
-func getEditButton() {
-
-}
+//func (app *App) getEditButton() *widget.Button {
+//	editButton := widget.NewButton("Редактировать", func() {
+//		info := app.DB.Model(&models.Resume{}).Where("user_id = ?", app.UserID).Where("resume_id = ?", app.ResumeID)
+//		app.ChangePage(app.NewResumeCreatorPage())
+//	})
+//	return editButton
+//}

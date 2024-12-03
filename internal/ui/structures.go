@@ -10,32 +10,42 @@ type App struct {
 	Window   fyne.Window
 	DB       *gorm.DB
 	UserID   uint
+	ResumeID uint
 	PrevPage fyne.CanvasObject
 	CurPage  fyne.CanvasObject
 }
 
-type ResumeEntries struct {
-	TargetPositionEntry   *widget.Entry
-	FullNameEntry         *widget.Entry
-	AgeEntry              *widget.Entry
-	LocationEntry         *widget.Entry
-	RelocationReadyCheck  *widget.Check
-	BizTripsReadyCheck    *widget.Check
-	OccupationEntry       *widget.Entry
-	ScheduleEntry         *widget.Entry
-	PhoneNumberEntry      *widget.Entry
-	MailEntry             *widget.Entry
-	TelegramEntry         *widget.Entry
-	FacilityEntry         *widget.Entry
-	GraduationYearEntry   *widget.Entry
-	FacultyEntry          *widget.Entry
+type PersonalEntry struct {
+	TargetPositionEntry  *widget.Entry
+	FullNameEntry        *widget.Entry
+	AgeEntry             *widget.Entry
+	LocationEntry        *widget.Entry
+	RelocationReadyCheck *widget.Check
+	BizTripsReadyCheck   *widget.Check
+	OccupationEntry      *widget.Entry
+	ScheduleEntry        *widget.Entry
+	SkillsEntry          *widget.Entry
+	SelfDescriptionEntry *widget.Entry
+}
+
+type ContactEntry struct {
+	PhoneNumberEntry *widget.Entry
+	MailEntry        *widget.Entry
+	TelegramEntry    *widget.Entry
+}
+
+type EducationEntry struct {
+	FacilityEntry       *widget.Entry
+	GraduationYearEntry *widget.Entry
+	FacultyEntry        *widget.Entry
+}
+
+type ExperienceEntry struct {
 	PositionEntry         *widget.Entry
 	CompanyEntry          *widget.Entry
 	StartDateEntry        *widget.Entry
 	EndDateEntry          *widget.Entry
 	ResponsibilitiesEntry *widget.Entry
-	SkillsEntry           *widget.Entry
-	SelfDescriptionEntry  *widget.Entry
 }
 
 type PathsToResumes struct {
