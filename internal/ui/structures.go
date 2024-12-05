@@ -7,12 +7,16 @@ import (
 )
 
 type App struct {
-	Window   fyne.Window
-	DB       *gorm.DB
-	UserID   uint
-	ResumeID uint
-	PrevPage fyne.CanvasObject
-	CurPage  fyne.CanvasObject
+	Window      fyne.Window
+	DB          *gorm.DB
+	UserID      uint
+	ResumeID    uint
+	Personal    *PersonalEntry
+	Contact     *ContactEntry
+	Educations  []*EducationEntry
+	Experiences []*ExperienceEntry
+	PrevPage    fyne.CanvasObject
+	CurPage     fyne.CanvasObject
 }
 
 type PersonalEntry struct {
