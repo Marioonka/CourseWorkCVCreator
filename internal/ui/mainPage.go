@@ -29,7 +29,7 @@ func (app *App) getMainPage() fyne.CanvasObject {
 
 	numberOfResumes := len(resumes)
 	log.Println(numberOfResumes)
-
+	app.clearEntries()
 	if numberOfResumes == 0 {
 		mainPageText = *canvas.NewText("Похоже, у вас еще нет созданных резюме. Вы можете начать прямо сейчас!", nil)
 		mainPageText.TextSize = 20
@@ -52,13 +52,17 @@ func (app *App) getMainPage() fyne.CanvasObject {
 				listOfResumes.Add(widget.NewLabel(err.Error()))
 				continue
 			}
-			listOfResumes.Add(link)
+			listOfResumes.Add(container.NewHBox(link, layout.NewSpacer(), app.getEditButton(resume.ID), app.getDropButton(resume.ID)))
+			listOfResumes.Add(container.NewVBox(line))
 		}
 		log.Println(listOfResumes)
 	}
 
 	createButton := widget.NewButton("Создать новое резюме", func() {
-		app.ChangePage(app.NewResumeCreatorPage())
+		app.clearEntries()
+		page := app.NewResumeCreatorPage()
+		page.Add(container.NewGridWithColumns(3, app.BackButton(), app.getSaveButton(0)))
+		app.ChangePage(container.NewScroll(page))
 	})
 
 	content := container.NewVBox(
@@ -101,10 +105,116 @@ func (app *App) getResumeLink(resume models.Resume, contacts models.Contact, edu
 	return resumeLink, nil
 }
 
-//func (app *App) getEditButton() *widget.Button {
-//	editButton := widget.NewButton("Редактировать", func() {
-//		info := app.DB.Model(&models.Resume{}).Where("user_id = ?", app.UserID).Where("resume_id = ?", app.ResumeID)
-//		app.ChangePage(app.NewResumeCreatorPage())
-//	})
-//	return editButton
-//}
+func (app *App) getEditButton(resumeID uint) *widget.Button {
+	editButton := widget.NewButton("Редактировать", func() {
+		app.getDataFromDB(resumeID)
+		fmt.Println("Редактируется резюме ", app.UserID)
+		page := app.NewResumeCreatorPage()
+		page.Add(container.NewGridWithColumns(3, app.BackButton(), app.getSaveButton(resumeID)))
+		app.ChangePage(container.NewScroll(page))
+	})
+	return editButton
+}
+
+func (app *App) getDataFromDB(resumeID uint) {
+	var resume models.Resume
+	err := app.DB.
+		Preload("Contacts").
+		Preload("Education").
+		Preload("Experience").
+		Where("user_id = ?", app.UserID).
+		Where("id = ?", resumeID).
+		First(&resume).Error
+	err = app.DB.Model(&models.Resume{}).Find(&resume).Error
+
+	if err != nil {
+		log.Fatalf("Ошибка при извлечении данных: %v", err)
+	}
+
+	if resume.ID == 0 {
+		log.Println("Резюме не найдено")
+	}
+	app.completePersonalData(resume)
+	app.completeContactData(resume)
+	app.completeEducationalData(resume.Education)
+	app.completeExperienceData(resume.Experience)
+}
+
+func (app *App) completePersonalData(resume models.Resume) {
+	app.Personal.TargetPositionEntry.Text = resume.TargetPosition
+	app.Personal.FullNameEntry.Text = resume.FullName
+	app.Personal.AgeEntry.Text = resume.Age
+	app.Personal.LocationEntry.Text = resume.Location
+	app.Personal.RelocationReadyCheck.Checked = resume.RelocationReady
+	app.Personal.BizTripsReadyCheck.Checked = resume.BizTripsReady
+	app.Personal.OccupationEntry.Text = resume.Occupation
+	app.Personal.ScheduleEntry.Text = resume.Schedule
+	app.Personal.SkillsEntry.Text = resume.Skills
+	app.Personal.SelfDescriptionEntry.Text = resume.SelfDescription
+}
+
+func (app *App) completeContactData(resume models.Resume) {
+	app.Contact.PhoneNumberEntry.Text = resume.Contacts.PhoneNumber
+	app.Contact.MailEntry.Text = resume.Contacts.MailAddress
+	app.Contact.TelegramEntry.Text = resume.Contacts.Telegram
+}
+
+func (app *App) completeEducationalData(resume []models.Education) {
+	app.Educations = make([]*EducationEntry, 0, len(resume))
+	for _, education := range resume {
+		eduObj := &EducationEntry{
+			FacilityEntry:       &widget.Entry{},
+			GraduationYearEntry: &widget.Entry{},
+			FacultyEntry:        &widget.Entry{},
+		}
+		if education.Facility != "" {
+			eduObj.FacilityEntry.Text = education.Facility
+			eduObj.GraduationYearEntry.Text = education.GraduationYear
+			eduObj.FacultyEntry.Text = education.Faculty
+			app.Educations = append(app.Educations, eduObj)
+		}
+	}
+}
+
+func (app *App) completeExperienceData(resume []models.Experience) {
+	app.Experiences = make([]*ExperienceEntry, 0, len(resume))
+	for _, experience := range resume {
+		expObj := &ExperienceEntry{
+			PositionEntry:         &widget.Entry{},
+			CompanyEntry:          &widget.Entry{},
+			StartDateEntry:        &widget.Entry{},
+			EndDateEntry:          &widget.Entry{},
+			ResponsibilitiesEntry: &widget.Entry{},
+		}
+		if experience.Position != "" {
+			expObj.PositionEntry.Text = experience.Position
+			expObj.CompanyEntry.Text = experience.Company
+			expObj.StartDateEntry.Text = experience.StartDate
+			expObj.EndDateEntry.Text = experience.EndDate
+			expObj.ResponsibilitiesEntry.Text = experience.Responsibilities
+			app.Experiences = append(app.Experiences, expObj)
+		}
+	}
+}
+
+func (app *App) getDropButton(resumeID uint) *widget.Button {
+	dropButton := widget.NewButton("Удалить", func() {
+		err := app.DB.Delete(&models.Resume{}, "id = ?", resumeID).Error
+		if err != nil {
+			dialog.ShowError(
+				fmt.Errorf("Ошибка при удалении резюме: %v", err),
+				app.Window,
+			)
+			return
+		}
+
+		dialog.ShowInformation(
+			"Успех",
+			"Резюме успешно удалено!",
+			app.Window,
+		)
+
+		app.ChangePage(app.getMainPage())
+	})
+	return dropButton
+}

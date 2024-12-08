@@ -13,97 +13,147 @@
             color: #333;
         }
 
-        h1, h2 {
-            color: #4CAF50;
+        .header {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
         }
 
-        h1 {
-            text-align: center;
-            margin-top: 20px;
+        .header h1 {
+            margin: 0;
             font-size: 36px;
         }
 
-        section {
-            margin: 20px;
-            padding: 15px;
-            background-color: #ffffff;
+        .content-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        section h2 {
+        .section {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section h2 {
+            font-size: 22px;
             margin-bottom: 15px;
-            font-size: 24px;
+            color: #4CAF50;
+            border-bottom: 2px solid #4CAF50;
+            display: inline-block;
+            padding-bottom: 5px;
         }
 
-        p {
-            font-size: 16px;
+        .section p {
+            margin: 10px 0;
             line-height: 1.6;
         }
 
-        strong {
-            color: #4CAF50;
-        }
-
-        .content-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-
-        .personal-info p,
-        .education-info p,
-        .experience-info p,
-        .skills-info p,
-        .about-info p,
-        .additional-info p {
+        .info-item {
+            display: flex;
+            justify-content: space-between;
             margin-bottom: 10px;
         }
 
-        .info-header {
-            margin-bottom: 10px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .contact-info p,
-        .contact-info strong {
+        .info-item strong {
             color: #4CAF50;
-        }
-
-        .contact-info {
-            margin-bottom: 20px;
         }
 
         footer {
             text-align: center;
-            margin-top: 30px;
+            padding: 15px;
+            background-color: #333;
+            color: #fff;
             font-size: 14px;
-            color: #777;
         }
 
+        /* Стили для контактов */
+        .contacts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .contact-item {
+            flex: 1;
+            min-width: 150px;
+            padding: 10px;
+            border: 1px solid #4CAF50;
+            border-radius: 5px;
+            text-align: center;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .contact-item strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #4CAF50;
+        }
+
+        /* Стили для образования и опыта */
+        .list-item {
+            margin: 10px 0;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .list-item::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
-<div class="content-container">
+<div class="header">
     <h1>Резюме: Golang разработчик</h1>
+</div>
 
-    <section class="personal-info">
+<div class="content-container">
+    <!-- Личные данные -->
+    <section class="section personal-info">
         <h2>Личные данные</h2>
-        <p><strong>ФИО:</strong> Спиридонова Марина Алексеевна</p>
-        <p><strong>Возраст:</strong> 17</p>
-        <p><strong>Местоположение:</strong> </p>
-        <p><strong>Готовность к переезду:</strong> Нет</p>
-        <p><strong>Готовность к командировкам:</strong> Нет</p>
-        <p><strong>Телефон:</strong> </p>
-        <p><strong>Email:</strong> </p>
-        <p><strong>Телеграм:</strong> </p>
+        <div class="info-item">
+            <p><strong>ФИО:</strong> Спиридонова Марина Алексеевна</p>
+            <p><strong>Возраст:</strong> 17</p>
+        </div>
+        <div class="info-item">
+            <p><strong>Местоположение:</strong> </p>
+            <p><strong>Готовность к переезду:</strong> Нет</p>
+        </div>
+        <div class="info-item">
+            <p><strong>Готовность к командировкам:</strong> Нет</p>
+        </div>
+        <div class="contacts">
+            <div class="contact-item">
+                <strong>Телефон</strong>
+                
+            </div>
+            <div class="contact-item">
+                <strong>Email</strong>
+                
+            </div>
+            <div class="contact-item">
+                <strong>Telegram</strong>
+                
+            </div>
+        </div>
     </section>
 
-    <section class="education-info">
+    <!-- Образование -->
+    <section class="section education-info">
         <h2>Образование</h2>
         
 		<p><strong>Учебное заведение:</strong> </p>
@@ -111,7 +161,8 @@
 		<p><strong>Факультет:</strong> </p>
     </section>
 
-    <section class="experience-info">
+    <!-- Опыт работы -->
+    <section class="section experience-info">
         <h2>Опыт работы</h2>
         
 		<p><strong>Должность:</strong> </p>
@@ -121,20 +172,27 @@
         <p><strong>Обязанности:</strong> </p>
     </section>
 
-    <section class="skills-info">
+    <!-- Навыки -->
+    <section class="section skills-info">
         <h2>Навыки</h2>
         <p></p>
     </section>
 
-    <section class="about-info">
+    <!-- О себе -->
+    <section class="section about-info">
         <h2>О себе</h2>
         <p></p>
     </section>
 
-    <section class="additional-info">
+    <!-- Дополнительно -->
+    <section class="section additional-info">
         <h2>Дополнительная информация</h2>
         <p><strong>Желаемый график работы:</strong> </p>
     </section>
 </div>
+
+<footer>
+    © {{Year}} Резюме подготовлено автоматически
+</footer>
 </body>
 </html>

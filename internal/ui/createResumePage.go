@@ -10,6 +10,7 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 	"image/color"
+	"log"
 )
 
 func (app *App) clearEntries() {
@@ -19,7 +20,7 @@ func (app *App) clearEntries() {
 	app.Educations = []*EducationEntry{}
 }
 
-func (app *App) NewResumeCreatorPage() fyne.CanvasObject {
+func (app *App) NewResumeCreatorPage() *fyne.Container {
 	namePageText := canvas.NewText("Создание резюме", nil)
 	namePageText.TextSize = 14
 
@@ -28,7 +29,6 @@ func (app *App) NewResumeCreatorPage() fyne.CanvasObject {
 
 	fillTheFormsText := canvas.NewText("Заполните поля для резюме", nil)
 	fillTheFormsText.TextSize = 24
-	app.clearEntries()
 
 	positionContainer := app.createTargetPositionData()
 	personalDataContainer := app.createPersonalData()
@@ -82,9 +82,10 @@ func (app *App) NewResumeCreatorPage() fyne.CanvasObject {
 
 		// О себе
 		aboutContainer,
-		container.NewGridWithColumns(3, widget.NewLabel(""), app.getSaveButton()),
+
+		widget.NewLabel(""),
 	)
-	return container.NewScroll(formContent)
+	return formContent
 }
 
 func NewPaths() *PathsToResumes {
@@ -147,20 +148,21 @@ func (app *App) NewEducationEntry() *EducationEntry {
 func (app *App) addExperienceForm(cont *fyne.Container) {
 	experience := app.NewExperienceEntry()
 	app.Experiences = append(app.Experiences, experience)
-	experienceForm := container.NewVBox(
-		widget.NewLabel("Должность:"),
-		experience.PositionEntry,
-		widget.NewLabel("Компания:"),
-		experience.CompanyEntry,
-		widget.NewLabel("Дата начала:"),
-		experience.StartDateEntry,
-		widget.NewLabel("Дата окончания:"),
-		experience.EndDateEntry,
-		widget.NewLabel("Обязанности:"),
-		experience.ResponsibilitiesEntry,
-		widget.NewSeparator(),
-	)
-	cont.Add(experienceForm)
+	for _, experience = range app.Experiences {
+		cont.Add(container.NewVBox(
+			widget.NewLabel("Должность:"),
+			experience.PositionEntry,
+			widget.NewLabel("Компания:"),
+			experience.CompanyEntry,
+			widget.NewLabel("Дата начала:"),
+			experience.StartDateEntry,
+			widget.NewLabel("Дата окончания:"),
+			experience.EndDateEntry,
+			widget.NewLabel("Обязанности:"),
+			experience.ResponsibilitiesEntry,
+			widget.NewSeparator(),
+		))
+	}
 }
 
 func (app *App) createTargetPositionData() *fyne.Container {
@@ -174,15 +176,18 @@ func (app *App) createTargetPositionData() *fyne.Container {
 func (app *App) addEducationForm(cont *fyne.Container) {
 	education := app.NewEducationEntry()
 	app.Educations = append(app.Educations, education)
-	educationForm := container.NewVBox(
-		widget.NewLabel("Учреждение:"),
-		education.FacilityEntry,
-		widget.NewLabel("Год окончания:"),
-		education.GraduationYearEntry,
-		widget.NewLabel("Факультет:"),
-		education.FacultyEntry,
-		widget.NewSeparator())
-	cont.Add(educationForm)
+	for _, education = range app.Educations {
+		cont.Add(
+			container.NewVBox(
+				widget.NewLabel("Учреждение:"),
+				education.FacilityEntry,
+				widget.NewLabel("Год окончания:"),
+				education.GraduationYearEntry,
+				widget.NewLabel("Факультет:"),
+				education.FacultyEntry,
+				widget.NewSeparator()),
+		)
+	}
 }
 
 func (app *App) createPersonalData() *fyne.Container {
@@ -253,15 +258,15 @@ func (app *App) createWorkExperienceContainer() *fyne.Container {
 func (app *App) createEducationContainer() *fyne.Container {
 	educationTitle := canvas.NewText("Образование", color.White)
 	educationTitle.TextSize = 16
-	entiresForm := container.NewVBox()
+	entriesForm := container.NewVBox()
 	educationContainer := container.NewVBox(
 		educationTitle,
 		widget.NewSeparator(),
-		entiresForm)
-	app.addEducationForm(entiresForm)
+		entriesForm)
+	app.addEducationForm(entriesForm)
 
 	addEduButton := widget.NewButton("Добавить образование", func() {
-		app.addEducationForm(entiresForm)
+		app.addEducationForm(entriesForm)
 	})
 	educationContainer.Add(addEduButton)
 	return educationContainer
@@ -284,41 +289,112 @@ func (app *App) createAboutData() *fyne.Container {
 	)
 }
 
-func (app *App) getSaveButton() *widget.Button {
-	saveButton := widget.NewButton("Сохранить резюме", func() {
-		fmt.Println("ID пользователя текущей сессии - ", app.UserID)
+func (app *App) getSaveButton(resumeID uint) *widget.Button {
+	var saveButton *widget.Button
+	if resumeID == 0 {
+		saveButton = widget.NewButton("Сохранить резюме", func() {
+			fmt.Println("ID пользователя текущей сессии - ", app.UserID)
 
-		resume := models.Resume{
-			UserID:          app.UserID,
-			TargetPosition:  app.Personal.TargetPositionEntry.Text,
-			FullName:        app.Personal.FullNameEntry.Text,
-			Age:             app.Personal.AgeEntry.Text,
-			Location:        app.Personal.LocationEntry.Text,
-			RelocationReady: app.Personal.RelocationReadyCheck.Checked,
-			BizTripsReady:   app.Personal.BizTripsReadyCheck.Checked,
-			Occupation:      app.Personal.OccupationEntry.Text,
-			Schedule:        app.Personal.ScheduleEntry.Text,
-			Contacts: models.Contact{
-				PhoneNumber: app.Contact.PhoneNumberEntry.Text,
-				MailAddress: app.Contact.MailEntry.Text,
-				Telegram:    app.Contact.MailEntry.Text,
-			},
-			Education:       app.NewEducationalList(app.Educations),
-			Experience:      app.NewExperiencesList(app.Experiences),
-			Skills:          app.Personal.SkillsEntry.Text,
-			SelfDescription: app.Personal.SelfDescriptionEntry.Text,
-		}
-		if err := app.DB.Create(&resume).Error; err != nil {
-			dialog.ShowError(err, app.Window)
-			fmt.Println(err)
-			return
-		}
-		app.clearEntries()
-		dialog.ShowInformation("Резюме сохранено", "Ваше резюме успешно сохранено!", app.Window)
-		templatesPage := app.getMainPage()
-		app.ChangePage(templatesPage)
-	})
+			resume := models.Resume{
+				UserID:          app.UserID,
+				TargetPosition:  app.Personal.TargetPositionEntry.Text,
+				FullName:        app.Personal.FullNameEntry.Text,
+				Age:             app.Personal.AgeEntry.Text,
+				Location:        app.Personal.LocationEntry.Text,
+				RelocationReady: app.Personal.RelocationReadyCheck.Checked,
+				BizTripsReady:   app.Personal.BizTripsReadyCheck.Checked,
+				Occupation:      app.Personal.OccupationEntry.Text,
+				Schedule:        app.Personal.ScheduleEntry.Text,
+				Contacts: models.Contact{
+					PhoneNumber: app.Contact.PhoneNumberEntry.Text,
+					MailAddress: app.Contact.MailEntry.Text,
+					Telegram:    app.Contact.MailEntry.Text,
+				},
+				Education:       app.NewEducationalList(app.Educations),
+				Experience:      app.NewExperiencesList(app.Experiences),
+				Skills:          app.Personal.SkillsEntry.Text,
+				SelfDescription: app.Personal.SelfDescriptionEntry.Text,
+			}
+			if err := app.DB.Create(&resume).Error; err != nil {
+				dialog.ShowError(err, app.Window)
+				fmt.Println(err)
+				return
+			}
+			app.clearEntries()
+			dialog.ShowInformation("Резюме сохранено", "Ваше резюме успешно сохранено!", app.Window)
+			templatesPage := app.getMainPage()
+			app.ChangePage(templatesPage)
+		})
 
+		return saveButton
+	} else {
+		saveButton = widget.NewButton("Сохранить резюме", func() {
+			err := app.DB.Model(&models.Resume{}).
+				Where("user_id = ? AND id = ?", app.UserID, resumeID).
+				Updates(models.Resume{
+					UserID:          app.UserID,
+					TargetPosition:  app.Personal.TargetPositionEntry.Text,
+					FullName:        app.Personal.FullNameEntry.Text,
+					Age:             app.Personal.AgeEntry.Text,
+					Location:        app.Personal.LocationEntry.Text,
+					RelocationReady: app.Personal.RelocationReadyCheck.Checked,
+					BizTripsReady:   app.Personal.BizTripsReadyCheck.Checked,
+					Occupation:      app.Personal.OccupationEntry.Text,
+					Schedule:        app.Personal.ScheduleEntry.Text,
+					Skills:          app.Personal.SkillsEntry.Text,
+					SelfDescription: app.Personal.SelfDescriptionEntry.Text,
+				}).Error
+			if err != nil {
+				dialog.ShowError(err, app.Window)
+				fmt.Println(err)
+				return
+			}
+			err = app.DB.Model(&models.Contact{}).
+				Where("resume_id = ?", resumeID).
+				Updates(models.Contact{
+					PhoneNumber: app.Contact.PhoneNumberEntry.Text,
+					MailAddress: app.Contact.MailEntry.Text,
+					Telegram:    app.Contact.TelegramEntry.Text,
+				}).Error
+
+			if err != nil {
+				dialog.ShowError(err, app.Window)
+				fmt.Println(err)
+				return
+			}
+
+			err = app.DB.Where("resume_id = ?", resumeID).Delete(&models.Education{}).Error
+			if err != nil {
+				log.Printf("Ошибка при удалении Education: %v", err)
+				return
+			}
+			for _, edu := range app.NewEducationalList(app.Educations) {
+				edu.ResumeID = resumeID
+				err = app.DB.Create(&edu).Error
+				if err != nil {
+					log.Printf("Ошибка при добавлении Education: %v", err)
+				}
+			}
+
+			err = app.DB.Where("resume_id = ?", resumeID).Delete(&models.Experience{}).Error
+			if err != nil {
+				log.Printf("Ошибка при удалении Experience: %v", err)
+				return
+			}
+			for _, exp := range app.NewExperiencesList(app.Experiences) {
+				exp.ResumeID = resumeID
+				err = app.DB.Create(&exp).Error
+				if err != nil {
+					log.Printf("Ошибка при добавлении Experience: %v", err)
+				}
+			}
+
+			app.clearEntries()
+			dialog.ShowInformation("Резюме сохранено", "Ваше резюме успешно сохранено!", app.Window)
+			templatesPage := app.getMainPage()
+			app.ChangePage(templatesPage)
+		})
+	}
 	return saveButton
 }
 

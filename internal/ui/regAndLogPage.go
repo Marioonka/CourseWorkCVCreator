@@ -2,8 +2,6 @@ package ui
 
 import (
 	"coursework/internal/models"
-	"log"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
@@ -90,7 +88,6 @@ func (app *App) Registration() fyne.CanvasObject {
 			return
 		}
 		app.UserID = newUser.ID
-		log.Println("Сейчас произойдет смена страницы")
 		app.ChangePage(app.getMainPage())
 	})
 
