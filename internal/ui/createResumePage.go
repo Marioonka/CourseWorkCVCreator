@@ -3,6 +3,7 @@ package ui
 import (
 	"coursework/helpers"
 	"coursework/internal/models"
+	"errors"
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -148,21 +149,19 @@ func (app *App) NewEducationEntry() *EducationEntry {
 func (app *App) addExperienceForm(cont *fyne.Container) {
 	experience := app.NewExperienceEntry()
 	app.Experiences = append(app.Experiences, experience)
-	for _, experience = range app.Experiences {
-		cont.Add(container.NewVBox(
-			widget.NewLabel("Должность:"),
-			experience.PositionEntry,
-			widget.NewLabel("Компания:"),
-			experience.CompanyEntry,
-			widget.NewLabel("Дата начала:"),
-			experience.StartDateEntry,
-			widget.NewLabel("Дата окончания:"),
-			experience.EndDateEntry,
-			widget.NewLabel("Обязанности:"),
-			experience.ResponsibilitiesEntry,
-			widget.NewSeparator(),
-		))
-	}
+	expForm := container.NewVBox(
+		widget.NewLabel("Должность:"),
+		experience.PositionEntry,
+		widget.NewLabel("Компания:"),
+		experience.CompanyEntry,
+		widget.NewLabel("Дата начала:"),
+		experience.StartDateEntry,
+		widget.NewLabel("Дата окончания:"),
+		experience.EndDateEntry,
+		widget.NewLabel("Обязанности:"),
+		experience.ResponsibilitiesEntry,
+		widget.NewSeparator())
+	cont.Add(expForm)
 }
 
 func (app *App) createTargetPositionData() *fyne.Container {
@@ -176,18 +175,15 @@ func (app *App) createTargetPositionData() *fyne.Container {
 func (app *App) addEducationForm(cont *fyne.Container) {
 	education := app.NewEducationEntry()
 	app.Educations = append(app.Educations, education)
-	for _, education = range app.Educations {
-		cont.Add(
-			container.NewVBox(
-				widget.NewLabel("Учреждение:"),
-				education.FacilityEntry,
-				widget.NewLabel("Год окончания:"),
-				education.GraduationYearEntry,
-				widget.NewLabel("Факультет:"),
-				education.FacultyEntry,
-				widget.NewSeparator()),
-		)
-	}
+	eduForm := container.NewVBox(
+		widget.NewLabel("Учреждение:"),
+		education.FacilityEntry,
+		widget.NewLabel("Год окончания:"),
+		education.GraduationYearEntry,
+		widget.NewLabel("Факультет:"),
+		education.FacultyEntry,
+		widget.NewSeparator())
+	cont.Add(eduForm)
 }
 
 func (app *App) createPersonalData() *fyne.Container {
@@ -247,7 +243,24 @@ func (app *App) createWorkExperienceContainer() *fyne.Container {
 		experienceTitle,
 		widget.NewSeparator(),
 		entriesForm)
-	app.addExperienceForm(entriesForm)
+	if len(app.Experiences) > 0 {
+		for _, experience := range app.Experiences {
+			entriesForm.Add(container.NewVBox(
+				widget.NewLabel("Должность:"),
+				experience.PositionEntry,
+				widget.NewLabel("Компания:"),
+				experience.CompanyEntry,
+				widget.NewLabel("Дата начала:"),
+				experience.StartDateEntry,
+				widget.NewLabel("Дата окончания:"),
+				experience.EndDateEntry,
+				widget.NewLabel("Обязанности:"),
+				experience.ResponsibilitiesEntry,
+				widget.NewSeparator()))
+		}
+	} else {
+		app.addExperienceForm(entriesForm)
+	}
 	addExperienceButton := widget.NewButton("Добавить опыт работы", func() {
 		app.addExperienceForm(entriesForm)
 	})
@@ -263,8 +276,20 @@ func (app *App) createEducationContainer() *fyne.Container {
 		educationTitle,
 		widget.NewSeparator(),
 		entriesForm)
-	app.addEducationForm(entriesForm)
-
+	if len(app.Experiences) > 0 {
+		for _, education := range app.Educations {
+			entriesForm.Add(container.NewVBox(
+				widget.NewLabel("Учреждение:"),
+				education.FacilityEntry,
+				widget.NewLabel("Год окончания:"),
+				education.GraduationYearEntry,
+				widget.NewLabel("Факультет:"),
+				education.FacultyEntry,
+				widget.NewSeparator()))
+		}
+	} else {
+		app.addEducationForm(entriesForm)
+	}
 	addEduButton := widget.NewButton("Добавить образование", func() {
 		app.addEducationForm(entriesForm)
 	})
@@ -318,6 +343,10 @@ func (app *App) getSaveButton(resumeID uint) *widget.Button {
 			if err := app.DB.Create(&resume).Error; err != nil {
 				dialog.ShowError(err, app.Window)
 				fmt.Println(err)
+				return
+			}
+			if app.Personal.TargetPositionEntry.Text == "" {
+				dialog.ShowError(errors.New("поле \"Желаемая должность\" должно быть заполнено"), app.Window)
 				return
 			}
 			app.clearEntries()

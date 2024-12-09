@@ -37,7 +37,6 @@ func (paths *PathsToResumes) GenerateHtmlResumeContent(resume models.Resume, con
 	htmlContent = strings.ReplaceAll(htmlContent, "{{Email}}", contacts.MailAddress)
 	htmlContent = strings.ReplaceAll(htmlContent, "{{Telegram}}", contacts.Telegram)
 
-	//TODO Разобраться почему списки пустые, скорее всего дело в запросе к бд и проблема на уровень выше
 	htmlContent = strings.ReplaceAll(htmlContent, "<!-- EducationInfoPlaceholder -->", NewAllEducationData(educations))
 
 	htmlContent = strings.ReplaceAll(htmlContent, "<!-- ExperienceInfoPlaceholder -->", NewAllExperiencesData(experiences))
@@ -59,11 +58,12 @@ func NewAllEducationData(educations []models.Education) string {
 	var resultString strings.Builder
 	for _, education := range educations {
 		resultString.WriteString(fmt.Sprintf(`
+		<div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
 		<p><strong>Учебное заведение:</strong> %v</p>
 		<p><strong>Год окончания:</strong> %v</p>
-		<p><strong>Факультет:</strong> %v</p>`,
+		<p><strong>Факультет:</strong> %v</p>
+		</div>`,
 			education.Facility, education.GraduationYear, education.Faculty))
-
 	}
 	return resultString.String()
 }
@@ -72,11 +72,13 @@ func NewAllExperiencesData(experiences []models.Experience) string {
 	var resultString strings.Builder
 	for _, experience := range experiences {
 		resultString.WriteString(fmt.Sprintf(`
+		<div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
 		<p><strong>Должность:</strong> %v</p>
         <p><strong>Компания:</strong> %v</p>
         <p><strong>Дата начала:</strong> %v</p>
         <p><strong>Дата окончания:</strong> %v</p>
-        <p><strong>Обязанности:</strong> %v</p>`,
+        <p><strong>Обязанности:</strong> %v</p>
+		</div>`,
 			experience.Position, experience.Company, experience.StartDate,
 			experience.EndDate, experience.Responsibilities))
 	}

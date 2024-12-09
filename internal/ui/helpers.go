@@ -11,7 +11,6 @@ func (app *App) ChangePage(newPage fyne.CanvasObject) {
 	app.PrevPage = app.CurPage
 	app.CurPage = newPage
 	app.Window.SetContent(newPage)
-	log.Println("Меняем страницу")
 }
 
 func (app *App) BackButton() *widget.Button {
