@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Резюме</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+
+        .content-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section h2 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #4CAF50;
+            border-bottom: 2px solid #4CAF50;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        .section p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .info-item strong {
+            color: #4CAF50;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #333;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        /* Стили для контактов */
+        .contacts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .contact-item {
+            flex: 1;
+            min-width: 150px;
+            padding: 10px;
+            border: 1px solid #4CAF50;
+            border-radius: 5px;
+            text-align: center;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .contact-item strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #4CAF50;
+        }
+
+        /* Стили для образования и опыта */
+        .list-item {
+            margin: 10px 0;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .list-item::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Резюме: Тестировщик</h1>
+</div>
+
+<div class="content-container">
+    <!-- Личные данные -->
+    <section class="section personal-info">
+        <h2>Личные данные</h2>
+        <div class="info-item">
+            <p><strong>ФИО:</strong> Спиридонова Марина</p>
+            <p><strong>Возраст:</strong> 17</p>
+        </div>
+        <div class="info-item">
+            <p><strong>Местоположение:</strong> Moscow</p>
+            <p><strong>Готовность к переезду:</strong> Да</p>
+        </div>
+        <div class="info-item">
+            <p><strong>Готовность к командировкам:</strong> Нет</p>
+        </div>
+        <div class="contacts">
+            <div class="contact-item">
+                <strong>Телефон</strong>
+                888888888888
+            </div>
+            <div class="contact-item">
+                <strong>Email</strong>
+                e@mail.ru
+            </div>
+            <div class="contact-item">
+                <strong>Telegram</strong>
+                e@mail.ru
+            </div>
+        </div>
+    </section>
+
+    <!-- Образование -->
+    <section class="section education-info">
+        <h2>Образование</h2>
+
+        <div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+            <p><strong>Учебное заведение:</strong> KMPO</p>
+            <p><strong>Год окончания:</strong> 2026</p>
+            <p><strong>Факультет:</strong> IT</p>
+        </div>
+        <div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+            <p><strong>Учебное заведение:</strong> kmpo</p>
+            <p><strong>Год окончания:</strong> 2022</p>
+            <p><strong>Факультет:</strong> it</p>
+        </div>
+        <div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+            <p><strong>Учебное заведение:</strong> ranh</p>
+            <p><strong>Год окончания:</strong> </p>
+            <p><strong>Факультет:</strong> </p>
+        </div>
+        <div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+            <p><strong>Учебное заведение:</strong> ranhigs</p>
+            <p><strong>Год окончания:</strong> 2222</p>
+            <p><strong>Факультет:</strong> </p>
+        </div>
+        <div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+            <p><strong>Учебное заведение:</strong> </p>
+            <p><strong>Год окончания:</strong> </p>
+            <p><strong>Факультет:</strong> </p>
+        </div>
+    </section>
+
+    <!-- Опыт работы -->
+    <section class="section experience-info">
+        <h2>Опыт работы</h2>
+
+        <div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+            <p><strong>Должность:</strong> Tester</p>
+            <p><strong>Компания:</strong> DGI</p>
+            <p><strong>Дата начала:</strong> 2022</p>
+            <p><strong>Дата окончания:</strong> 2023</p>
+            <p><strong>Обязанности:</strong> </p>
+        </div>
+        <div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+            <p><strong>Должность:</strong> tester</p>
+            <p><strong>Компания:</strong> amo</p>
+            <p><strong>Дата начала:</strong> </p>
+            <p><strong>Дата окончания:</strong> </p>
+            <p><strong>Обязанности:</strong> </p>
+        </div>
+        <div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+            <p><strong>Должность:</strong> analyst</p>
+            <p><strong>Компания:</strong> amo</p>
+            <p><strong>Дата начала:</strong> </p>
+            <p><strong>Дата окончания:</strong> </p>
+            <p><strong>Обязанности:</strong> </p>
+        </div>
+        <div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+            <p><strong>Должность:</strong> golang dev</p>
+            <p><strong>Компания:</strong> dgiiiii</p>
+            <p><strong>Дата начала:</strong> </p>
+            <p><strong>Дата окончания:</strong> </p>
+            <p><strong>Обязанности:</strong> </p>
+        </div>
+    </section>
+
+    <!-- Навыки -->
+    <section class="section skills-info">
+        <h2>Навыки</h2>
+        <p>Golang, unit tests</p>
+    </section>
+
+    <!-- О себе -->
+    <section class="section about-info">
+        <h2>О себе</h2>
+        <p>Never mind</p>
+    </section>
+
+    <!-- Дополнительно -->
+    <section class="section additional-info">
+        <h2>Дополнительная информация</h2>
+        <p><strong>Желаемый график работы:</strong> 5/2</p>
+    </section>
+</div>
+
+<footer>
+    © 2024 Резюме подготовлено автоматически
+</footer>
+</body>
+</html>
+
