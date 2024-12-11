@@ -5,6 +5,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 )
@@ -59,12 +60,41 @@ func (app *App) Registration() fyne.CanvasObject {
 	registerButton := widget.NewButton("Зарегистрироваться", func() {
 		login := loginInput.Text
 		password := passwdInput.Text
+		assertPassword := passwdAccertion.Text
 
 		if login == "" || password == "" {
-			fyne.CurrentApp().SendNotification(&fyne.Notification{
-				Title:   "Ошибка регистрации",
-				Content: "Логин и пароль не могут быть пустыми.",
-			})
+			dialog.ShowInformation(
+				"Ошибка регистрации",
+				"Логин и пароль не могут быть пустыми.",
+				app.Window,
+			)
+			return
+		}
+
+		if assertPassword != password {
+			dialog.ShowInformation(
+				"Ошибка регистрации",
+				"Пароли должны совпадать.",
+				app.Window,
+			)
+			return
+		}
+
+		if login == password {
+			dialog.ShowInformation(
+				"Ошибка регистрации",
+				"Логин и пароль не могут совпадать.",
+				app.Window,
+			)
+			return
+		}
+
+		if len(password) < 6 {
+			dialog.ShowInformation(
+				"Ошибка регистрации",
+				"Пароль должен быть от 6 символов",
+				app.Window,
+			)
 			return
 		}
 
@@ -74,17 +104,19 @@ func (app *App) Registration() fyne.CanvasObject {
 		}
 
 		if err := app.DB.Create(&newUser).Error; err != nil {
-			fyne.CurrentApp().SendNotification(&fyne.Notification{
-				Title:   "Ошибка регистрации",
-				Content: "Логин уже существует или произошла ошибка.",
-			})
+			dialog.ShowInformation(
+				"Ошибка регистрации",
+				"Логин уже существует или произошла ошибка.",
+				app.Window,
+			)
 			return
 		}
 		if err := app.DB.Where("login = ?", login).First(&newUser).Error; err != nil {
-			fyne.CurrentApp().SendNotification(&fyne.Notification{
-				Title:   "Ошибка входа",
-				Content: "Не удалось найти зарегистрированный аккаунт",
-			})
+			dialog.ShowInformation(
+				"Ошибка входа",
+				"Не удалось найти зарегистрированный аккаунт",
+				app.Window,
+			)
 			return
 		}
 		app.UserID = newUser.ID
@@ -135,28 +167,31 @@ func (app *App) Authorization() fyne.CanvasObject {
 		password := passwdInput.Text
 
 		if login == "" || password == "" {
-			fyne.CurrentApp().SendNotification(&fyne.Notification{
-				Title:   "Ошибка входа",
-				Content: "Логин и пароль не могут быть пустыми.",
-			})
+			dialog.ShowInformation(
+				"Ошибка входа",
+				"Логин и пароль не могут быть пустыми.",
+				app.Window,
+			)
 			return
 		}
 
 		var user models.RegisterUsers
 
 		if err := app.DB.Where("login = ?", login).First(&user).Error; err != nil {
-			fyne.CurrentApp().SendNotification(&fyne.Notification{
-				Title:   "Ошибка входа",
-				Content: "Неверный логин или пароль.",
-			})
+			dialog.ShowInformation(
+				"Ошибка входа",
+				"Неверный логин или пароль.",
+				app.Window,
+			)
 			return
 		}
 
 		if user.Password != password {
-			fyne.CurrentApp().SendNotification(&fyne.Notification{
-				Title:   "Ошибка входа",
-				Content: "Неверный логин или пароль.",
-			})
+			dialog.ShowInformation(
+				"Ошибка входа",
+				"Неверный логин или пароль.",
+				app.Window,
+			)
 			return
 		}
 		if user.Role == "admin" {
