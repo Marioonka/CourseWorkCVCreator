@@ -21,6 +21,7 @@ type App struct {
 
 type PersonalEntry struct {
 	TargetPositionEntry  *widget.Entry
+	SalaryEntry          *widget.Entry
 	FullNameEntry        *widget.Entry
 	AgeEntry             *widget.Entry
 	LocationEntry        *widget.Entry

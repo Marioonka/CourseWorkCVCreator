@@ -8,6 +8,7 @@ type Resume struct {
 	ID              uint         `gorm:"primaryKey"`
 	UserID          uint         `gorm:"not null"`
 	TargetPosition  string       `gorm:"type:text"`
+	Salary          string       `gorm:"type:text"`
 	FullName        string       `gorm:"size:255"`
 	Age             string       `gorm:"not null"`
 	Contacts        Contact      `gorm:"foreignKey:ResumeID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`

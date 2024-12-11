@@ -142,6 +142,7 @@ func (app *App) getDataFromDB(resumeID uint) {
 
 func (app *App) completePersonalData(resume models.Resume) {
 	app.Personal.TargetPositionEntry.Text = resume.TargetPosition
+	app.Personal.SalaryEntry.Text = resume.Salary
 	app.Personal.FullNameEntry.Text = resume.FullName
 	app.Personal.AgeEntry.Text = resume.Age
 	app.Personal.LocationEntry.Text = resume.Location

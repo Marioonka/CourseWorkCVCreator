@@ -104,9 +104,9 @@ func (app *App) NewPersonalEntries() *PersonalEntry {
 	return &PersonalEntry{
 
 		TargetPositionEntry: widget.NewEntry(),
-
-		FullNameEntry: widget.NewEntry(),
-		AgeEntry:      widget.NewEntry(),
+		SalaryEntry:         widget.NewEntry(),
+		FullNameEntry:       widget.NewEntry(),
+		AgeEntry:            widget.NewEntry(),
 
 		LocationEntry:        widget.NewEntry(),
 		OccupationEntry:      widget.NewEntry(),
@@ -164,14 +164,6 @@ func (app *App) addExperienceForm(cont *fyne.Container) {
 	cont.Add(expForm)
 }
 
-func (app *App) createTargetPositionData() *fyne.Container {
-	PosTitle := canvas.NewText("Желаемая должность", color.White)
-	PosTitle.TextSize = 16
-	return container.NewVBox(
-		PosTitle, app.Personal.TargetPositionEntry,
-	)
-}
-
 func (app *App) addEducationForm(cont *fyne.Container) {
 	education := app.NewEducationEntry()
 	app.Educations = append(app.Educations, education)
@@ -184,6 +176,17 @@ func (app *App) addEducationForm(cont *fyne.Container) {
 		education.FacultyEntry,
 		widget.NewSeparator())
 	cont.Add(eduForm)
+}
+
+func (app *App) createTargetPositionData() *fyne.Container {
+	PosTitle := canvas.NewText("Желаемая должность", color.White)
+	PosTitle.TextSize = 16
+	SalTitle := canvas.NewText("Зарплатные ожидания", color.White)
+	SalTitle.TextSize = 16
+	return container.NewVBox(
+		PosTitle, app.Personal.TargetPositionEntry,
+		SalTitle, app.Personal.SalaryEntry,
+	)
 }
 
 func (app *App) createPersonalData() *fyne.Container {
@@ -258,8 +261,6 @@ func (app *App) createWorkExperienceContainer() *fyne.Container {
 				experience.ResponsibilitiesEntry,
 				widget.NewSeparator()))
 		}
-	} else {
-		app.addExperienceForm(entriesForm)
 	}
 	addExperienceButton := widget.NewButton("Добавить опыт работы", func() {
 		app.addExperienceForm(entriesForm)
@@ -276,7 +277,7 @@ func (app *App) createEducationContainer() *fyne.Container {
 		educationTitle,
 		widget.NewSeparator(),
 		entriesForm)
-	if len(app.Experiences) > 0 {
+	if len(app.Educations) > 0 {
 		for _, education := range app.Educations {
 			entriesForm.Add(container.NewVBox(
 				widget.NewLabel("Учреждение:"),
@@ -287,8 +288,6 @@ func (app *App) createEducationContainer() *fyne.Container {
 				education.FacultyEntry,
 				widget.NewSeparator()))
 		}
-	} else {
-		app.addEducationForm(entriesForm)
 	}
 	addEduButton := widget.NewButton("Добавить образование", func() {
 		app.addEducationForm(entriesForm)
@@ -323,6 +322,7 @@ func (app *App) getSaveButton(resumeID uint) *widget.Button {
 			resume := models.Resume{
 				UserID:          app.UserID,
 				TargetPosition:  app.Personal.TargetPositionEntry.Text,
+				Salary:          app.Personal.SalaryEntry.Text,
 				FullName:        app.Personal.FullNameEntry.Text,
 				Age:             app.Personal.AgeEntry.Text,
 				Location:        app.Personal.LocationEntry.Text,
@@ -333,7 +333,7 @@ func (app *App) getSaveButton(resumeID uint) *widget.Button {
 				Contacts: models.Contact{
 					PhoneNumber: app.Contact.PhoneNumberEntry.Text,
 					MailAddress: app.Contact.MailEntry.Text,
-					Telegram:    app.Contact.MailEntry.Text,
+					Telegram:    app.Contact.TelegramEntry.Text,
 				},
 				Education:       app.NewEducationalList(app.Educations),
 				Experience:      app.NewExperiencesList(app.Experiences),
@@ -363,6 +363,7 @@ func (app *App) getSaveButton(resumeID uint) *widget.Button {
 				Updates(models.Resume{
 					UserID:          app.UserID,
 					TargetPosition:  app.Personal.TargetPositionEntry.Text,
+					Salary:          app.Personal.SalaryEntry.Text,
 					FullName:        app.Personal.FullNameEntry.Text,
 					Age:             app.Personal.AgeEntry.Text,
 					Location:        app.Personal.LocationEntry.Text,

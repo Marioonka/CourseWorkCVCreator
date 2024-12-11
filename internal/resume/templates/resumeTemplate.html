@@ -75,7 +75,6 @@
             font-size: 14px;
         }
 
-        /* Стили для контактов */
         .contacts {
             display: flex;
             flex-wrap: wrap;
@@ -100,7 +99,6 @@
             color: #4CAF50;
         }
 
-        /* Стили для образования и опыта */
         .list-item {
             margin: 10px 0;
             padding-left: 15px;
@@ -118,122 +116,54 @@
 </head>
 <body>
 <div class="header">
-    <h1>Резюме: Тестировщик</h1>
+    <h1>Резюме: {{TargetPosition}}</h1>
 </div>
 
 <div class="content-container">
-    <!-- Личные данные -->
     <section class="section personal-info">
-        <h2>Личные данные</h2>
+        <!-- PersonalInfoPlaceholder -->
+        <!-- InfoPlaceholder -->
         <div class="info-item">
-            <p><strong>ФИО:</strong> Спиридонова Марина</p>
-            <p><strong>Возраст:</strong> 17</p>
+            <p><strong>Готовность к переезду:</strong> {{RelocationReady}}</p>
         </div>
         <div class="info-item">
-            <p><strong>Местоположение:</strong> Moscow</p>
-            <p><strong>Готовность к переезду:</strong> Да</p>
+            <p><strong>Готовность к командировкам:</strong> {{BizTripsReady}}</p>
         </div>
-        <div class="info-item">
-            <p><strong>Готовность к командировкам:</strong> Нет</p>
-        </div>
+        <section class="section additional-info">
+            <!-- AddInfoPlaceholder -->
+        </section>
         <div class="contacts">
             <div class="contact-item">
                 <strong>Телефон</strong>
-                888888888888
+                {{PhoneNumber}}
             </div>
             <div class="contact-item">
                 <strong>Email</strong>
-                e@mail.ru
+                {{Email}}
             </div>
             <div class="contact-item">
                 <strong>Telegram</strong>
-                e@mail.ru
+                {{Telegram}}
             </div>
         </div>
     </section>
 
-    <!-- Образование -->
     <section class="section education-info">
-        <h2>Образование</h2>
-
-        <div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-            <p><strong>Учебное заведение:</strong> KMPO</p>
-            <p><strong>Год окончания:</strong> 2026</p>
-            <p><strong>Факультет:</strong> IT</p>
-        </div>
-        <div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-            <p><strong>Учебное заведение:</strong> kmpo</p>
-            <p><strong>Год окончания:</strong> 2022</p>
-            <p><strong>Факультет:</strong> it</p>
-        </div>
-        <div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-            <p><strong>Учебное заведение:</strong> ranh</p>
-            <p><strong>Год окончания:</strong> </p>
-            <p><strong>Факультет:</strong> </p>
-        </div>
-        <div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-            <p><strong>Учебное заведение:</strong> ranhigs</p>
-            <p><strong>Год окончания:</strong> 2222</p>
-            <p><strong>Факультет:</strong> </p>
-        </div>
-        <div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-            <p><strong>Учебное заведение:</strong> </p>
-            <p><strong>Год окончания:</strong> </p>
-            <p><strong>Факультет:</strong> </p>
-        </div>
+        <!-- EducationInfoPlaceholder -->
     </section>
 
-    <!-- Опыт работы -->
     <section class="section experience-info">
-        <h2>Опыт работы</h2>
-
-        <div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-            <p><strong>Должность:</strong> Tester</p>
-            <p><strong>Компания:</strong> DGI</p>
-            <p><strong>Дата начала:</strong> 2022</p>
-            <p><strong>Дата окончания:</strong> 2023</p>
-            <p><strong>Обязанности:</strong> </p>
-        </div>
-        <div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-            <p><strong>Должность:</strong> tester</p>
-            <p><strong>Компания:</strong> amo</p>
-            <p><strong>Дата начала:</strong> </p>
-            <p><strong>Дата окончания:</strong> </p>
-            <p><strong>Обязанности:</strong> </p>
-        </div>
-        <div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-            <p><strong>Должность:</strong> analyst</p>
-            <p><strong>Компания:</strong> amo</p>
-            <p><strong>Дата начала:</strong> </p>
-            <p><strong>Дата окончания:</strong> </p>
-            <p><strong>Обязанности:</strong> </p>
-        </div>
-        <div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-            <p><strong>Должность:</strong> golang dev</p>
-            <p><strong>Компания:</strong> dgiiiii</p>
-            <p><strong>Дата начала:</strong> </p>
-            <p><strong>Дата окончания:</strong> </p>
-            <p><strong>Обязанности:</strong> </p>
-        </div>
+        <!-- ExperienceInfoPlaceholder -->
     </section>
 
-    <!-- Навыки -->
     <section class="section skills-info">
-        <h2>Навыки</h2>
-        <p>Golang, unit tests</p>
+        <!-- SkillsInfoPlaceholder -->
     </section>
 
-    <!-- О себе -->
     <section class="section about-info">
-        <h2>О себе</h2>
-        <p>Never mind</p>
+        <!-- AboutPlaceholder -->
     </section>
 
-    <!-- Дополнительно -->
-    <section class="section additional-info">
-        <h2>Дополнительная информация</h2>
-        <p><strong>Желаемый график работы:</strong> 5/2</p>
-    </section>
 </div>
 
 <footer>
@@ -241,4 +171,3 @@
 </footer>
 </body>
 </html>
-
