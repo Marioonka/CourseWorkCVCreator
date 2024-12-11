@@ -159,6 +159,9 @@ func (app *App) Authorization() fyne.CanvasObject {
 			})
 			return
 		}
+		if user.Role == "admin" {
+			app.Role = user.Role
+		}
 		app.UserID = user.ID
 		app.ChangePage(app.getMainPage())
 	})

@@ -11,6 +11,7 @@ type App struct {
 	DB          *gorm.DB
 	UserID      uint
 	ResumeID    uint
+	Role        string
 	Personal    *PersonalEntry
 	Contact     *ContactEntry
 	Educations  []*EducationEntry

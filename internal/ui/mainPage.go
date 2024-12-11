@@ -52,7 +52,7 @@ func (app *App) getMainPage() fyne.CanvasObject {
 				listOfResumes.Add(widget.NewLabel(err.Error()))
 				continue
 			}
-			listOfResumes.Add(container.NewHBox(link, layout.NewSpacer(), app.getEditButton(resume.ID), app.getDropButton(resume.ID)))
+			listOfResumes.Add(container.NewHBox(link, layout.NewSpacer(), app.getEditButton(resume.ID), app.getDropResumeButton(resume.ID)))
 			listOfResumes.Add(container.NewVBox(line))
 		}
 		log.Println(listOfResumes)
@@ -65,6 +65,10 @@ func (app *App) getMainPage() fyne.CanvasObject {
 		app.ChangePage(container.NewScroll(page))
 	})
 
+	listOfUsersButton := widget.NewButton("Посмотреть список всех пользователей", func() {
+		app.ChangePage(app.getUsersPage())
+	})
+
 	content := container.NewVBox(
 		namePageText,
 		line,
@@ -72,8 +76,12 @@ func (app *App) getMainPage() fyne.CanvasObject {
 		layout.NewSpacer(),
 		container.NewCenter(&mainPageText),
 		layout.NewSpacer(),
-		container.NewGridWithColumns(3, widget.NewLabel(""), widget.NewLabel(""), createButton),
 	)
+	if app.Role == "admin" {
+		content.Add(container.NewGridWithColumns(3, listOfUsersButton, widget.NewLabel(""), createButton))
+	} else {
+		content.Add(container.NewGridWithColumns(3, widget.NewLabel(""), widget.NewLabel(""), createButton))
+	}
 	return content
 }
 
@@ -198,7 +206,7 @@ func (app *App) completeExperienceData(resume []models.Experience) {
 	}
 }
 
-func (app *App) getDropButton(resumeID uint) *widget.Button {
+func (app *App) getDropResumeButton(resumeID uint) *widget.Button {
 	dropButton := widget.NewButton("Удалить", func() {
 		err := app.DB.Delete(&models.Resume{}, "id = ?", resumeID).Error
 		if err != nil {
