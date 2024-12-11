@@ -9,33 +9,35 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
             color: #333;
         }
 
         .header {
-            background-color: #4CAF50;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
             color: #fff;
             padding: 20px;
             text-align: center;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
         }
 
         .header h1 {
             margin: 0;
-            font-size: 36px;
+            font-size: 28px;
         }
 
         .content-container {
             max-width: 800px;
             margin: 20px auto;
             background-color: #fff;
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
         }
 
         .section {
-            padding: 20px;
+            padding: 15px;
             border-bottom: 1px solid #e0e0e0;
         }
 
@@ -44,17 +46,17 @@
         }
 
         .section h2 {
-            font-size: 22px;
-            margin-bottom: 15px;
-            color: #4CAF50;
-            border-bottom: 2px solid #4CAF50;
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #2575fc;
+            border-bottom: 2px solid #6a11cb;
             display: inline-block;
             padding-bottom: 5px;
         }
 
         .section p {
-            margin: 10px 0;
-            line-height: 1.6;
+            margin: 8px 0;
+            line-height: 1.5;
         }
 
         .info-item {
@@ -64,93 +66,94 @@
         }
 
         .info-item strong {
-            color: #4CAF50;
+            color: #2575fc;
         }
 
         footer {
             text-align: center;
             padding: 15px;
-            background-color: #333;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
             color: #fff;
             font-size: 14px;
+            border-radius: 15px 15px 0 0;
         }
 
         .contacts {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 10px;
             margin-top: 10px;
         }
 
         .contact-item {
             flex: 1;
-            min-width: 150px;
+            min-width: 120px;
             padding: 10px;
-            border: 1px solid #4CAF50;
+            border: 1px solid #6a11cb;
             border-radius: 5px;
             text-align: center;
-            background-color: #f9f9f9;
+            background-color: #f7f9fc;
             color: #333;
         }
 
         .contact-item strong {
             display: block;
             margin-bottom: 5px;
-            color: #4CAF50;
+            color: #2575fc;
         }
 
         .list-item {
-            margin: 10px 0;
-            padding-left: 15px;
+            margin: 8px 0;
+            padding-left: 20px;
             position: relative;
         }
 
         .list-item::before {
-            content: '•';
+            content: '\2022';
             position: absolute;
             left: 0;
-            color: #4CAF50;
-            font-size: 20px;
+            color: #6a11cb;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
 <div class="header">
-    <h1>Резюме: designer</h1>
+    <h1>Резюме: Тестировщик</h1>
 </div>
 
 <div class="content-container">
     <section class="section personal-info">
         <h2>Личные данные</h2>
 												<div class="info-item">
-												<p><strong>ФИО:</strong> www</p>
+												<p><strong>ФИО:</strong> Марина</p>
 												</div><div class="info-item">
-												<p><strong>Возраст:</strong> 123</p>
+												<p><strong>Возраст:</strong> 17</p>
 												</div>
         <div class="info-item">
-												<p><strong>Местоположение:</strong> dddddddd</p>
+												<p><strong>Местоположение:</strong> москваВолгоградсикй проспетк</p>
 												</div>
         <div class="info-item">
-            <p><strong>Готовность к переезду:</strong> Да</p>
+            <p><strong>Готовность к переезду:</strong> Нет</p>
         </div>
         <div class="info-item">
-            <p><strong>Готовность к командировкам:</strong> Нет</p>
+            <p><strong>Готовность к командировкам:</strong> Да</p>
         </div>
         <section class="section additional-info">
-            <h2>Дополнительная информация</h2><p><strong>Желаемый график работы:</strong> 1</p><p><strong>Желаемая занятость:</strong> 33</p>
+            <h2>Дополнительная информация</h2><p><strong>Желаемый график работы:</strong> 5\2</p><p><strong>Желаемая занятость:</strong> фулл</p>
         </section>
         <div class="contacts">
             <div class="contact-item">
                 <strong>Телефон</strong>
-                213313
+                22222222
             </div>
             <div class="contact-item">
                 <strong>Email</strong>
-                cccccc@1111
+                почта
             </div>
             <div class="contact-item">
                 <strong>Telegram</strong>
-                cccccc@1111
+                ник
             </div>
         </div>
     </section>
@@ -158,7 +161,12 @@
     <section class="section education-info">
         <h2>Образование</h2>
 		<div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-		<p><strong>Учебное заведение:</strong> </p>
+		<p><strong>Учебное заведение:</strong> КМПО РАНХИГС</p>
+		<p><strong>Год окончания:</strong> 2026</p>
+		<p><strong>Факультет:</strong> </p>
+		</div>
+		<div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+		<p><strong>Учебное заведение:</strong> Степик</p>
 		<p><strong>Год окончания:</strong> </p>
 		<p><strong>Факультет:</strong> </p>
 		</div>
@@ -167,34 +175,29 @@
     <section class="section experience-info">
         <h2>Опыт работы</h2>
 		<div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-		<p><strong>Должность:</strong> designer</p>
-        <p><strong>Компания:</strong> dgi</p>
-        <p><strong>Дата начала:</strong> 2022</p>
-        <p><strong>Дата окончания:</strong> 2023</p>
+		<p><strong>Должность:</strong> Тестировщик</p>
+        <p><strong>Компания:</strong> АмоСРМ</p>
+        <p><strong>Дата начала:</strong> </p>
+        <p><strong>Дата окончания:</strong> </p>
         <p><strong>Обязанности:</strong> </p>
 		</div>
 		<div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-		<p><strong>Должность:</strong> tester</p>
-        <p><strong>Компания:</strong> dgi</p>
-        <p><strong>Дата начала:</strong> 2023</p>
-        <p><strong>Дата окончания:</strong> 2024</p>
-        <p><strong>Обязанности:</strong> </p>
-		</div>
-		<div class="education-block" style="padding: 15px; border: 1px solid #ddd; border-radius: 10px; background-color: #f4f4f9; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-		<p><strong>Должность:</strong> analyst</p>
-        <p><strong>Компания:</strong> dgi2</p>
-        <p><strong>Дата начала:</strong> 2024</p>
-        <p><strong>Дата окончания:</strong> 2025</p>
+		<p><strong>Должность:</strong> Программист</p>
+        <p><strong>Компания:</strong> ДГИ</p>
+        <p><strong>Дата начала:</strong> </p>
+        <p><strong>Дата окончания:</strong> </p>
         <p><strong>Обязанности:</strong> </p>
 		</div>
     </section>
 
     <section class="section skills-info">
-        
+        <h2>Навыки</h2>
+													<p>много</p>
     </section>
 
     <section class="section about-info">
-        
+        <h2>О себе</h2>
+													<p>не буду</p>
     </section>
 
 </div>
